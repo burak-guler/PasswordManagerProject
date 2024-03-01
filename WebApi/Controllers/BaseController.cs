@@ -12,10 +12,22 @@ namespace WebApi.Controllers
     public class BaseController : ControllerBase
     {
         private IHttpContextAccessor _contextAccessor;
-         public BaseController()
+        public BaseController(IHttpContextAccessor contextAccessor)
         {
-
+            _contextAccessor = contextAccessor;
         }
-        protected User CurrentUser => (User) JsonConvert.DeserializeObject(_contextAccessor.HttpContext.Session.Get("CurrentUser").ToString());
+
+        protected User CurrentUser 
+        {
+            get
+            {
+                var currentUserJson = _contextAccessor.HttpContext.Session.GetString("CurrentUser");
+                if (currentUserJson != null)
+                {
+                    return JsonConvert.DeserializeObject<User>(currentUserJson);
+                }
+                return null;
+            }
+        }
     }
 }

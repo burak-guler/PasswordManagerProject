@@ -55,7 +55,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseSession();
-app.UseMiddleware<TokenInfoMiddleware>();
+
 
 app.UseHttpsRedirection();
 
@@ -65,6 +65,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 //Yetkilendirme Yapýsý sonu
+app.UseMiddleware<TokenInfoMiddleware>();
 
 app.MapControllers();
 

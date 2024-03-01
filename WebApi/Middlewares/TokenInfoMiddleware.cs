@@ -24,45 +24,57 @@ namespace WebApi.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            var token = context.Request.Headers["Authorization"].ToString();
-
-            if (token == null)
+            try
             {
-                context.Response.StatusCode = 401;
-                await context.Response.WriteAsync("Yetkilendirme Eksik.");
+                if (!context.Request.Path.Value.Equals("/api/Auth/LoginUser"))
+                {
+                    var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+                    if (token == null)
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        await context.Response.WriteAsync("Yetkilendirme Eksik.");
+                        return;
+                    }
+                    SymmetricSecurityKey symmetricSecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["AppSettings:Secret"]));
+
+
+
+                    JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+                    var jwtSecurityToken = handler.ReadJwtToken(token);
+                    if (jwtSecurityToken == null)
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
+
+                    var userIdClaim = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == "UserID")?.Value;
+                    var userNameClaim = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == "UserName")?.Value;
+                    var passwordClaim = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == "Password")?.Value;
+
+
+                    User user = new User()
+                    {
+                        UserID = Convert.ToInt32(userIdClaim),
+                        UserName = userNameClaim,
+                        Password = passwordClaim
+                    };
+
+                    string userJson = JsonConvert.SerializeObject(user);                  
+                    
+
+                    _contextAccessor.HttpContext.Session.SetString("CurrentUser", userJson);
+
+
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 return;
             }
-            SymmetricSecurityKey symmetricSecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["AppSettings:Secret"]));
-
-            
-
-            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-            handler.ValidateToken(token,new TokenValidationParameters()
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = symmetricSecurityKey,
-                ValidateIssuer = false,
-                ValidateAudience = false
-
-            }, out SecurityToken valideToken);
-
-            var jwtToken = (JwtSecurityToken)valideToken;
-            var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserID");
-            var userNameClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserName");
-            var passwordClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "Password");
-
-            User user = new User()
-            {
-                UserID = Convert.ToInt32(userIdClaim.Value),
-                UserName = userNameClaim.Value,
-                Password = passwordClaim.Value
-            };
-
-            string userJson = JsonConvert.SerializeObject(user);
-            // JSON verisini byte dizisine çevir
-            byte[] userDataBytes = Encoding.UTF8.GetBytes(userJson);
-
-            _contextAccessor.HttpContext.Session.Set("CurrentUser", userDataBytes);
 
 
             await _next(context);

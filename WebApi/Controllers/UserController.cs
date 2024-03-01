@@ -11,7 +11,7 @@ namespace WebApi.Controllers
     {
         private IUserService _userService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _userService = userService;
         }
@@ -19,40 +19,84 @@ namespace WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-            var values = await _userService.GetUserList();
-            return Ok(values);
+            try
+            {
+                var values = await _userService.GetUserList();
+                return Ok(values);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+            
         }
 
         [HttpGet]
         public async Task<IActionResult> GetUser(int id)
         {
-            var value = await _userService.GetUser(id);
-            if (value == null)
+            try
             {
-                return NotFound();
+                var value = await _userService.GetUser(id);
+                if (value == null)
+                {
+                    return NotFound();
+                }
+                return Ok(value);
             }
-            return Ok(value);
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+
         }
 
         [HttpPost]
         public async Task<IActionResult> AddUser(User user)
         {
-            await _userService.UserAdd(user);
-            return Ok();
+            try
+            {
+                await _userService.UserAdd(user);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateUser(User user)
         {
-            await _userService.UserUpdate(user);
-            return Ok();
+            try
+            {
+                await _userService.UserUpdate(user);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+
         }
 
         [HttpDelete]
         public async Task<IActionResult> RemoveUser(int id)
         {
-            await _userService.UserRemove(id);
-            return Ok();
+            try
+            {
+                await _userService.UserRemove(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "hata: " + ex.Message);
+            }
         }
     }
 }

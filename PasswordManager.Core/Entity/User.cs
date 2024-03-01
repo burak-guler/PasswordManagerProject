@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.Core.Entity
 {
+   
     public class User
     {
         [Key]

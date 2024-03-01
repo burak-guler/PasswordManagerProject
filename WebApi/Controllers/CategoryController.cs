@@ -11,7 +11,7 @@ namespace WebApi.Controllers
     {
         private ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _categoryService = categoryService;
         }
@@ -20,40 +20,87 @@ namespace WebApi.Controllers
         [HttpGet]
         public async Task <IActionResult> GetAllCategory()
         {
-            var values = await _categoryService.GetCategoryList();
-            return Ok(values);
+            try
+            {
+                var user = CurrentUser;
+                var values = await _categoryService.GetCategoryList();
+                return Ok(values);
+            }
+            catch (Exception ex)
+            {
+                
+                return StatusCode(500, "hata: " + ex.Message);
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> GetCategory(int id)
         {
-            var category = await _categoryService.GetCategory(id);
-            if (category == null)
+            try
             {
-                return NotFound(); 
+                var category = await _categoryService.GetCategory(id);
+                if (category == null)
+                {
+                    return NotFound();
+                }
+                return Ok(category);
             }
-            return Ok(category);
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+
+          
         }
 
         [HttpPost]
         public async Task<IActionResult> AddCategory(Category category)
         {
-           await _categoryService.CategoryAdd(category);
-            return Ok();
+            try
+            {
+                await _categoryService.CategoryAdd(category);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+           
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateCategory(Category category)
         {
-            await _categoryService.CategoryUpdate(category);  
-            return Ok();
+            try
+            {
+                await _categoryService.CategoryUpdate(category);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+
         }
 
         [HttpDelete]
         public async Task<IActionResult> RemoveCategory(int id)
         {
-            await  _categoryService.CategoryRemove(id); 
-            return Ok();
+            try
+            {
+                await _categoryService.CategoryRemove(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+
+           
         }
     }
 }

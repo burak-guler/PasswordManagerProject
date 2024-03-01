@@ -13,7 +13,7 @@ namespace WebApi.Controllers
     {
         private IAuthService _authService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IHttpContextAccessor httpContextAccessor) :base(httpContextAccessor)
         {
            _authService = authService;
         }
@@ -22,9 +22,18 @@ namespace WebApi.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> LoginUser([FromBody] User request)
         {
-            var result = await _authService.LoginUser(request);
+            try
+            {
+                var result = await _authService.LoginUser(request);
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+            
         }
     }
 }
