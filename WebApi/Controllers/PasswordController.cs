@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using log4net;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PasswordManager.BusinessLayer.Abstract;
 using PasswordManager.BusinessLayer.Concrete;
@@ -10,9 +11,11 @@ namespace WebApi.Controllers
     public class PasswordController : BaseController
     {
         private IPasswordService _passwordService;
-        public PasswordController(IPasswordService passwordService , IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        private  ILog _logger;
+        public PasswordController(IPasswordService passwordService , IHttpContextAccessor httpContextAccessor, ILog log) : base(httpContextAccessor)
         {
             _passwordService = passwordService;
+            _logger = log;
         }
 
         [HttpGet]
@@ -25,7 +28,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.Error("HATA-GetAllPassword:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
 
@@ -45,7 +48,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.Error("HATA-GetPassword:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
 
@@ -62,7 +65,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.Error("HATA-AddPassword:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
 
@@ -79,7 +82,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.Error("HATA-UpdatePassword:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
         }
@@ -94,7 +97,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.Error("HATA-RemovePassword:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
         }

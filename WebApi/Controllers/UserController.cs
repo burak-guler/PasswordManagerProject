@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using log4net;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PasswordManager.BusinessLayer.Abstract;
 using PasswordManager.BusinessLayer.Concrete;
@@ -10,10 +11,12 @@ namespace WebApi.Controllers
     public class UserController : BaseController
     {
         private IUserService _userService;
+        private ILog _logger;
 
-        public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor,ILog log) : base(httpContextAccessor)
         {
             _userService = userService;
+            _logger = log;
         }
 
         [HttpGet]
@@ -26,7 +29,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.Error("HATA-GetAllUsers:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
             
@@ -46,7 +49,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.Error("HATA-GetUser:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
 
@@ -62,7 +65,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.Error("HATA-AddUser:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
 
@@ -78,7 +81,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.Error("HATA-UpdateUser:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
 
@@ -94,7 +97,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.Error("HATA-RemoveUser:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using log4net;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using PasswordManager.Core.Entity;
@@ -13,12 +14,14 @@ namespace WebApi.Middlewares
         private readonly RequestDelegate _next;
         readonly IConfiguration configuration;
         private IHttpContextAccessor _contextAccessor;
+        private ILog _logger;
 
-        public TokenInfoMiddleware(RequestDelegate next , IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public TokenInfoMiddleware(RequestDelegate next , IConfiguration configuration, IHttpContextAccessor httpContextAccessor,ILog log)
         {
             _next = next;
             this.configuration = configuration;
             _contextAccessor = httpContextAccessor;
+            _logger = log;
         }
 
 
@@ -72,6 +75,7 @@ namespace WebApi.Middlewares
             }
             catch (Exception ex)
             {
+                _logger.Error("HATA-TokenInfoMiddleware:" + ex.ToString());
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 return;
             }

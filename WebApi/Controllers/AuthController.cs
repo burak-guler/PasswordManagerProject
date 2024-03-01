@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using log4net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PasswordManager.Core.Entity;
@@ -12,10 +13,12 @@ namespace WebApi.Controllers
     public class AuthController : BaseController
     {
         private IAuthService _authService;
+        private  ILog _logger;
 
-        public AuthController(IAuthService authService, IHttpContextAccessor httpContextAccessor) :base(httpContextAccessor)
+        public AuthController(IAuthService authService, IHttpContextAccessor httpContextAccessor,ILog log) :base(httpContextAccessor)
         {
            _authService = authService;
+            _logger = log;
         }
 
         [HttpPost]
@@ -30,7 +33,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.Error("HATA-LoginUser:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
             

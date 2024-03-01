@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using WebApi;
 using WebApi.Extension;
 using WebApi.Middlewares;
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +20,8 @@ builder.Services.AddRepositories();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
 builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddLog4net();
 
 //Yetkilendirme Yapýsý
 builder.Services.AddAuthentication(options =>
@@ -41,6 +43,7 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero
     };
 });
+
 
 builder.Services.AddAuthorization();
 

@@ -1,19 +1,20 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using log4net;
 using Microsoft.AspNetCore.Mvc;
 using PasswordManager.BusinessLayer.Abstract;
 using PasswordManager.Core.Entity;
 
 namespace WebApi.Controllers
 {
-    
+
     public class CategoryController : BaseController
     {
         private ICategoryService _categoryService;
+        private readonly ILog _logger;
 
-        public CategoryController(ICategoryService categoryService, IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        public CategoryController(ICategoryService categoryService, IHttpContextAccessor httpContextAccessor, ILog log) : base(httpContextAccessor)
         {
             _categoryService = categoryService;
+            _logger = log;
         }
 
         
@@ -23,12 +24,14 @@ namespace WebApi.Controllers
             try
             {
                 var user = CurrentUser;
+
                 var values = await _categoryService.GetCategoryList();
                 return Ok(values);
             }
             catch (Exception ex)
             {
                 
+                _logger.Error("HATA-GetAllCategory:"+ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
         }

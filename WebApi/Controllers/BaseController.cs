@@ -17,17 +17,7 @@ namespace WebApi.Controllers
             _contextAccessor = contextAccessor;
         }
 
-        protected User CurrentUser 
-        {
-            get
-            {
-                var currentUserJson = _contextAccessor.HttpContext.Session.GetString("CurrentUser");
-                if (currentUserJson != null)
-                {
-                    return JsonConvert.DeserializeObject<User>(currentUserJson);
-                }
-                return null;
-            }
-        }
+        protected User CurrentUser => (User)JsonConvert.DeserializeObject(_contextAccessor.HttpContext.Session.GetString("CurrentUser"));
+        
     }
 }
