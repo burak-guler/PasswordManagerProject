@@ -51,6 +51,7 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
 
+                _logger.Error("HATA-GetCategory:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
 
@@ -68,6 +69,7 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
 
+                _logger.Error("HATA-AddCategory:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
            
@@ -84,6 +86,7 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
 
+                _logger.Error("HATA-UpdateCategory:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
 
@@ -100,6 +103,7 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
 
+                _logger.Error("HATA-RemoveCategory:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
 
