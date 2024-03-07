@@ -21,44 +21,33 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
 
         public async Task Add(Category value)
         {
-            //var query = "INSERT INTO dbo.Tbl_Category VALUES (@CategoryName)";
-
-             var connection = await ConnectionDb();            
-
-            await connection.ExecuteAsync(CategoryQuery.ADD, value);           
-        }
-
-        public async Task <Category> Get(int id)
-        {
-            var query = "SELECT * FROM dbo.Tbl_Category WHERE CategoryID=@id";
-
-            var connection = await ConnectionDb();        
-            
-            return await connection.QueryFirstOrDefaultAsync<Category>(query, new {id});
-        }
-
-        public async Task< List<Category>> List()
-        {
-            var query = "SELECT * FROM dbo.Tbl_Category";
-
             var connection = await ConnectionDb();
+            await connection.ExecuteAsync(CategoryQuery.ADD, value);
+        }
 
-            return (await connection.QueryAsync<Category>(query))?
+        public async Task<Category> Get(int id)
+        {
+            var connection = await ConnectionDb();
+            return await connection.QueryFirstOrDefaultAsync<Category>(CategoryQuery.GET, new { id });
+        }
+
+        public async Task<List<Category>> List()
+        {
+            var connection = await ConnectionDb();
+            return (await connection.QueryAsync<Category>(CategoryQuery.GET_LIST))?
                 .ToList();
         }
 
         public async Task Remove(int id)
         {
-            var query = "DELETE FROM dbo.Tbl_Category WHERE CategoryID = @id";
             var connection = await ConnectionDb();
-            await connection.ExecuteAsync(query, new {id});
+            await connection.ExecuteAsync(CategoryQuery.REMOVE, new { id });
         }
 
         public async Task Update(Category value)
         {
-            var query = "UPDATE dbo.Tbl_Category SET CategoryName = @CategoryName WHERE CategoryID =@CategoryID";
             var connection = await ConnectionDb();
-            await connection.ExecuteAsync(query,value);            
+            await connection.ExecuteAsync(CategoryQuery.UPDATE, value);
         }
     }
 }

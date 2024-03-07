@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApi.Models;
 
 namespace PasswordManager.DataAccessLayer.Concrete.Repositories
 {
@@ -40,26 +41,23 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
         }
 
         public async Task <List<User>> List()
-        {
-            
+        {            
             var connection = await ConnectionDb();
-
             return (await connection.QueryAsync<User>(UserQuery.GET_LIST))?
                 .ToList();
         }
 
         public async Task Remove(int id)
-        {
-            
+        {            
             var connection = await ConnectionDb();
             await connection.ExecuteAsync(UserQuery.REMOVE, new {id});
         }
 
         public async Task Update(User value)
-        {
-           
+        {           
             var connection = await ConnectionDb();
             await connection.ExecuteAsync(UserQuery.UPDATE,value);
         }
+       
     }
 }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApi.Models;
+
 
 namespace PasswordManager.BusinessLayer.Abstract
 {
@@ -14,8 +16,6 @@ namespace PasswordManager.BusinessLayer.Abstract
         Task<User> GetUser(int id);
         Task UserRemove(int id);
         Task UserUpdate(User user);
-
-        Task<User> Login(User user);
-
+        Task<User> Login(User user);     
     }
 }

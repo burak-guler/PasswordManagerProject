@@ -1,4 +1,5 @@
 ﻿using log4net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PasswordManager.BusinessLayer.Abstract;
@@ -11,12 +12,41 @@ namespace WebApi.Controllers
     public class UserController : BaseController
     {
         private IUserService _userService;
+        private ITokenService _tokenService;
         private ILog _logger;
 
-        public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor,ILog log) : base(httpContextAccessor)
+        public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor,ITokenService tokenService ,ILog log) : base(httpContextAccessor)
         {
             _userService = userService;
+            _tokenService = tokenService;
             _logger = log;
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] User request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.UserName) || string.IsNullOrEmpty(request.Password))
+                {
+                    throw new ArgumentNullException(nameof(request));
+                }
+
+                var user = await _userService.Login(request);
+                if (user == null)
+                    throw new ArgumentNullException(nameof(user));
+
+                var tokenResponse = _tokenService.GenerateToken(user);                
+
+                return Ok(tokenResponse);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("HATA-LoginUser:" + ex.ToString());
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+
         }
 
         [HttpGet]

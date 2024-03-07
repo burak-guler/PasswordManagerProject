@@ -68,7 +68,6 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-
                 _logger.Error("HATA-AddCategory:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }

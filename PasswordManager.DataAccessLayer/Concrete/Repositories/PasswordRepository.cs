@@ -20,36 +20,31 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
 
         public async Task Add(Password value)
         {
-            var connection = await ConnectionDb();
-            
+            var connection = await ConnectionDb();            
             await connection.ExecuteAsync(PasswordQuery.ADD,value);
         }
 
         public async Task< Password> Get(int id)
-        {
-        
+        {        
             var connection = await ConnectionDb();
             return await connection.QueryFirstAsync<Password>(PasswordQuery.GET,new {id});
         }
 
         public async Task< List<Password>> List()
-        {
-            
+        {            
             var connection = await ConnectionDb();
             return (await connection.QueryAsync<Password>(PasswordQuery.GET_LIST))?
                 .ToList();
         }
 
         public async Task Remove(int id)
-        {
-            
+        {            
             var connection = await ConnectionDb();
             await connection.ExecuteAsync(PasswordQuery.REMOVE, new {id});
         }
 
         public async Task Update(Password value)
-        {
-            
+        {            
             var connection = await ConnectionDb();
             await connection.ExecuteAsync(PasswordQuery.UPDATE,value);
         }

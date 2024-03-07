@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApi.Models;
 
 namespace PasswordManager.BusinessLayer.Concrete
 {
@@ -31,7 +32,7 @@ namespace PasswordManager.BusinessLayer.Concrete
         public async Task<User> Login(User user)
         {
            return await _userRepository.Login(user);
-        }
+        }        
 
         public async Task UserAdd(User user)
         {

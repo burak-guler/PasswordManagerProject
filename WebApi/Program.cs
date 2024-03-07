@@ -1,29 +1,32 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Configuration;
 using System.Text;
-using WebApi;
 using WebApi.Extension;
 using WebApi.Middlewares;
+using WebApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
-
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//container
+
+//extension container yapýsý için
 builder.Services.AddServices();
 builder.Services.AddRepositories();
 
+//session yapýsý için
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
 builder.Services.AddDistributedMemoryCache();
 
+//appsetings yapýsýna ulaþmak için
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+
+//log4net ile hata yazdýrmak için
 builder.Services.AddLog4net();
 
-//Yetkilendirme Yapýsý
+//jwt doðrulamasý için
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -33,42 +36,36 @@ builder.Services.AddAuthentication(options =>
 {
     o.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidIssuer = builder.Configuration["AppSettings:ValidIssuer"],
-        ValidAudience = builder.Configuration["AppSettings:ValidAudience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:Secret"])),
+        ValidIssuer = builder.Configuration["JwtSettings:ValidIssuer"],
+        ValidAudience = builder.Configuration["JwtSettings:ValidAudience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Secret"])),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
+        RequireExpirationTime = true,
         ClockSkew = TimeSpan.Zero
     };
 });
 
-
 builder.Services.AddAuthorization();
-
-//Yetkilendirme Yapýsý sonu
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseSession();
 
-
 app.UseHttpsRedirection();
-
-//Yetkilendirme Yapýsý 
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-//Yetkilendirme Yapýsý sonu
-app.UseMiddleware<TokenInfoMiddleware>();
+app.UseMiddleware<TokenMiddleware>();
 
 app.MapControllers();
 

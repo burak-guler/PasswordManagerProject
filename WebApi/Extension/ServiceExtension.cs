@@ -2,8 +2,6 @@
 using PasswordManager.BusinessLayer.Concrete;
 using PasswordManager.DataAccessLayer.Abstract;
 using PasswordManager.DataAccessLayer.Concrete.Repositories;
-using WebApi.Models.Abstract;
-using WebApi.Models.Concrete;
 
 namespace WebApi.Extension
 {
@@ -14,8 +12,7 @@ namespace WebApi.Extension
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ITokenService, TokenService>();            
             return services;    
         }
 
