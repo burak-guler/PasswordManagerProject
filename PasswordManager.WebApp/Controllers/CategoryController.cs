@@ -1,27 +1,22 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PasswordManager.WebApp.Models;
 using PasswordManager.WebApp.Services.Abstract;
 
 namespace PasswordManager.WebApp.Controllers
 {
-    
-
-    public class CategoryController : Controller
+    public class CategoryController : BaseController
     {
-        private ICategoryService _categoryService;
+        private ICategoryClientService _categoryService;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryClientService categoryService, IHttpContextAccessor contextAccessor) : base(contextAccessor)
         {
             _categoryService = categoryService;
-        }       
+        }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
-        }       
-               
-        
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAllCategory() 

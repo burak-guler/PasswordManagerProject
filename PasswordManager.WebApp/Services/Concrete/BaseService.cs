@@ -7,11 +7,11 @@ namespace PasswordManager.WebApp.Services.Concrete
     public class BaseService<T> : IBaseService<T> where T : class
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly HttpClient _httpClient;
+        protected readonly HttpClient _httpClient;
         public BaseService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
-            _httpClient = httpClient;
+            _httpClient = httpClient;           
         }
 
         public async Task tokenAuth()

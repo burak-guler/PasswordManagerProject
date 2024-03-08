@@ -1,5 +1,6 @@
 ﻿using log4net;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using PasswordManager.BusinessLayer.Abstract;
 using PasswordManager.Core.Entity;
 
@@ -11,13 +12,12 @@ namespace WebApi.Controllers
         private ICategoryService _categoryService;
         private readonly ILog _logger;
 
-        public CategoryController(ICategoryService categoryService, IHttpContextAccessor httpContextAccessor, ILog log) : base(httpContextAccessor)
+        public CategoryController(ICategoryService categoryService, IHttpContextAccessor httpContextAccessor, ILog log, IMemoryCache memoryCache) : base(httpContextAccessor, memoryCache)
         {
             _categoryService = categoryService;
             _logger = log;
         }
 
-        
         [HttpGet]
         public async Task <IActionResult> GetAllCategory()
         {

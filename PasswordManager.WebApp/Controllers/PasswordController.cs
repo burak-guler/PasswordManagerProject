@@ -6,10 +6,10 @@ using PasswordManager.WebApp.Services.Abstract;
 namespace PasswordManager.WebApp.Controllers
 {
   
-    public class PasswordController : ControllerBase
+    public class PasswordController : BaseController
     {
-        private IPasswordService _passwordService;      
-        public PasswordController(IPasswordService passwordService) 
+        private IPasswordClientService _passwordService;      
+        public PasswordController(IPasswordClientService passwordService, IHttpContextAccessor contextAccessor) : base(contextAccessor)
         {
             _passwordService = passwordService;
        

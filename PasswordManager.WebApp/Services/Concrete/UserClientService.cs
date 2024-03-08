@@ -6,16 +6,12 @@ using System.Text;
 
 namespace PasswordManager.WebApp.Services.Concrete
 {
-    public class UserService : BaseService<UserResponse> ,IUserService
-    {
-        private readonly HttpClient _httpClient;
+    public class UserClientService : BaseService<UserResponse> ,IUserClientService
+    {     
         
-
-        public UserService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor) : base(httpClient, httpContextAccessor)
+        public UserClientService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor) : base(httpClient, httpContextAccessor)
         {
-            _httpClient = httpClient;          
-
-            _httpClient.BaseAddress = new Uri("https://localhost:7014/");
+            
         }
 
         public async Task Add(UserResponse value)
@@ -25,13 +21,13 @@ namespace PasswordManager.WebApp.Services.Concrete
             //json a çevirme
             var content = new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
             //post isteği
-            var response = await _httpClient.PostAsync("api/User/AddUser", content);
+            var response = await _httpClient.PostAsync("AddUser", content);
         }
 
         public async Task<UserResponse> Get(int id)
         {
             tokenAuth();
-            var response = await _httpClient.GetAsync($"api/User/GetUser/?id={id}");
+            var response = await _httpClient.GetAsync($"GetUser/?id={id}");
             var jsonString = await response.Content.ReadAsStringAsync();
             var User = JsonConvert.DeserializeObject<UserResponse>(jsonString);
             return User;
@@ -40,7 +36,7 @@ namespace PasswordManager.WebApp.Services.Concrete
         public async Task<List<UserResponse>> GetAll()
         {
             tokenAuth();
-            var response = await _httpClient.GetAsync("api/User/GetAllUsers");
+            var response = await _httpClient.GetAsync("GetAllUsers");
             var jsonString = await response.Content.ReadAsStringAsync();
             var Users = JsonConvert.DeserializeObject<List<UserResponse>>(jsonString);
             return Users;
@@ -52,7 +48,7 @@ namespace PasswordManager.WebApp.Services.Concrete
             //json a çevirme
             var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
             //post isteği
-            var response = await _httpClient.PostAsync("api/User/Login", content);
+            var response = await _httpClient.PostAsync("Login", content);
             var jsonString = await response.Content.ReadAsStringAsync();
             var loginResponse = JsonConvert.DeserializeObject<UserLoginResponse>(jsonString);
             return loginResponse;
@@ -62,7 +58,7 @@ namespace PasswordManager.WebApp.Services.Concrete
         public async Task Remove(int id)
         {
             tokenAuth();
-            var response = await _httpClient.DeleteAsync($"api/User/RemoveUser?id={id}");
+            var response = await _httpClient.DeleteAsync($"RemoveUser?id={id}");
         }
 
         public async Task Update(UserResponse value)
@@ -70,7 +66,7 @@ namespace PasswordManager.WebApp.Services.Concrete
             tokenAuth();
             var content = new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PutAsync("api/User/UpdateUser", content);
+            var response = await _httpClient.PutAsync("UpdateUser", content);
         }
     }
 }

@@ -1,15 +1,17 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Configuration;
+using PasswordManager.BusinessLayer.Models;
 using System.Text;
 using WebApi.Extension;
 using WebApi.Middlewares;
-using WebApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//cache aktif edelim
+builder.Services.AddMemoryCache();
 
 //extension container yapýsý için
 builder.Services.AddServices();

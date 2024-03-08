@@ -6,12 +6,12 @@ using PasswordManager.WebApp.Services.Abstract;
 namespace PasswordManager.WebApp.Controllers
 {
     
-    public class UserController : ControllerBase
+    public class UserController : BaseController
     {
-        private IUserService _userService;
+        private IUserClientService _userService;
         
 
-        public UserController(IUserService userService) 
+        public UserController(IUserClientService userService, IHttpContextAccessor contextAccessor) : base(contextAccessor)
         {
             _userService = userService;
         }
@@ -22,6 +22,12 @@ namespace PasswordManager.WebApp.Controllers
         {
             try
             {
+                
+                if (string.IsNullOrEmpty(request.UserName) || string.IsNullOrEmpty(request.Password))
+                {
+                    return StatusCode(500);
+                }
+
                 var tokenResponse = await _userService.Login(request);
                 return Ok(tokenResponse);
             }
@@ -38,6 +44,7 @@ namespace PasswordManager.WebApp.Controllers
             try
             {
                 var values = await _userService.GetAll();
+                //var user = CurrentUser;
                 return Ok(values);
             }
             catch (Exception ex)

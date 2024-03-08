@@ -6,16 +6,11 @@ using System.Text;
 
 namespace PasswordManager.WebApp.Services.Concrete
 {
-    public class PasswordService : BaseService<PasswordResponse> ,IPasswordService
+    public class PasswordClientService : BaseService<PasswordResponse> ,IPasswordClientService
     {
-        private readonly HttpClient _httpClient;
-        
-
-        public PasswordService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor) : base(httpClient, httpContextAccessor)
+        public PasswordClientService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor) : base(httpClient, httpContextAccessor)
         {
-            _httpClient = httpClient;        
-
-            _httpClient.BaseAddress = new Uri("https://localhost:7014/");
+            
         }
 
         public async Task Add(PasswordResponse value)
@@ -24,13 +19,13 @@ namespace PasswordManager.WebApp.Services.Concrete
             //json a çevirme
             var content = new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
             //post isteği
-            await _httpClient.PostAsync("api/Password/AddPassword", content);
+            await _httpClient.PostAsync("AddPassword", content);
         }
 
         public async Task<PasswordResponse> Get(int id)
         {
             tokenAuth();
-            var response = await _httpClient.GetAsync($"api/Password/GetPassword/?id={id}");
+            var response = await _httpClient.GetAsync($"GetPassword/?id={id}");
             var jsonString = await response.Content.ReadAsStringAsync();
             var getPassword = JsonConvert.DeserializeObject<PasswordResponse>(jsonString);
             return getPassword;
@@ -39,7 +34,7 @@ namespace PasswordManager.WebApp.Services.Concrete
         public async Task<List<PasswordResponse>> GetAll()
         {
             tokenAuth();
-            var response = await _httpClient.GetAsync("api/Password/GetAllPassword");
+            var response = await _httpClient.GetAsync("GetAllPassword");
             var jsonString = await response.Content.ReadAsStringAsync();
             var Allpassword = JsonConvert.DeserializeObject<List<PasswordResponse>>(jsonString);
             return Allpassword;
@@ -48,7 +43,7 @@ namespace PasswordManager.WebApp.Services.Concrete
         public async Task Remove(int id)
         {
             tokenAuth();
-           await _httpClient.DeleteAsync($"api/Password/RemovePassword?id={id}");
+           await _httpClient.DeleteAsync($"RemovePassword?id={id}");
         }
 
         public async Task Update(PasswordResponse value)
@@ -56,7 +51,7 @@ namespace PasswordManager.WebApp.Services.Concrete
             tokenAuth();
             var content = new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
 
-            await _httpClient.PutAsync("api/Password/UpdatePassword", content);
+            await _httpClient.PutAsync("UpdatePassword", content);
         }
     }
 }

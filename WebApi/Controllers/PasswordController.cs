@@ -1,6 +1,7 @@
 ﻿using log4net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using PasswordManager.BusinessLayer.Abstract;
 using PasswordManager.BusinessLayer.Concrete;
 using PasswordManager.Core.Entity;
@@ -12,7 +13,7 @@ namespace WebApi.Controllers
     {
         private IPasswordService _passwordService;
         private  ILog _logger;
-        public PasswordController(IPasswordService passwordService , IHttpContextAccessor httpContextAccessor, ILog log) : base(httpContextAccessor)
+        public PasswordController(IPasswordService passwordService , IHttpContextAccessor httpContextAccessor, ILog log, IMemoryCache memoryCache) : base(httpContextAccessor, memoryCache)
         {
             _passwordService = passwordService;
             _logger = log;

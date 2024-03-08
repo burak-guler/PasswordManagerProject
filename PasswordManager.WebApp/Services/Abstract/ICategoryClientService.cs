@@ -2,8 +2,8 @@
 
 namespace PasswordManager.WebApp.Services.Abstract
 {
-    public interface IPasswordService : IBaseService<PasswordResponse>
+    public interface ICategoryClientService : IBaseService<CategoryResponse>
     {
-       
+        
     }
 }

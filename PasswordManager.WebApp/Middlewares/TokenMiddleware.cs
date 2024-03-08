@@ -1,11 +1,9 @@
 ﻿using log4net;
-using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using PasswordManager.Core.Entity;
-using PasswordManager.Core.Models;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace WebApi.Middlewares
+namespace PasswordManager.WebApp.Middlewares
 {
     public class TokenMiddleware
     {
@@ -13,21 +11,19 @@ namespace WebApi.Middlewares
 
         private IHttpContextAccessor _contextAccessor;
         private ILog _logger;
-        private IMemoryCache _memoryCache;
 
-        public TokenMiddleware(RequestDelegate next, IHttpContextAccessor httpContextAccessor, ILog log, IMemoryCache memoryCache)
+        public TokenMiddleware(RequestDelegate next, IHttpContextAccessor httpContextAccessor, ILog log)
         {
             _next = next;
             _contextAccessor = httpContextAccessor;
             _logger = log;
-            _memoryCache = memoryCache;
         }
 
         public async Task Invoke(HttpContext context)
         {
             try
             {
-                if (!context.Request.Path.Value.Equals("/api/User/Login"))
+                if (!context.Request.Path.Value.Equals("/User/Login"))
                 {
                     var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
@@ -60,22 +56,14 @@ namespace WebApi.Middlewares
                     }
 
 
-                    UserTokenResponse userTokenResponse = new UserTokenResponse()
+                    User user = new User()
                     {
                         UserID = Convert.ToInt32(userId),
                         UserName = userName,
-                        Password = password,
-                        AuthToken= token
+                        Password = password
                     };
 
-                    //_contextAccessor.HttpContext.Session.SetString("CurrentUser", JsonConvert.SerializeObject(user));
-                   
-
-                    if (!_memoryCache.TryGetValue(token, out UserTokenResponse value))
-                    {
-                        _memoryCache.Set<UserTokenResponse>(token, userTokenResponse);
-                    }
-
+                    _contextAccessor.HttpContext.Session.SetString("CurrentUser", JsonConvert.SerializeObject(user));
                 }
             }
             catch (Exception ex)

@@ -1,21 +1,20 @@
 ﻿using log4net;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using PasswordManager.BusinessLayer.Abstract;
-using PasswordManager.BusinessLayer.Concrete;
 using PasswordManager.Core.Entity;
 
 namespace WebApi.Controllers
 {
-    
+
     public class UserController : BaseController
     {
         private IUserService _userService;
         private ITokenService _tokenService;
         private ILog _logger;
 
-        public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor,ITokenService tokenService ,ILog log) : base(httpContextAccessor)
+        public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor,ITokenService tokenService ,ILog log,IMemoryCache memoryCache) : base(httpContextAccessor,memoryCache)
         {
             _userService = userService;
             _tokenService = tokenService;
@@ -28,14 +27,15 @@ namespace WebApi.Controllers
         {
             try
             {
+                
                 if (string.IsNullOrEmpty(request.UserName) || string.IsNullOrEmpty(request.Password))
                 {
-                    throw new ArgumentNullException(nameof(request));
+                    return StatusCode(500);
                 }
 
                 var user = await _userService.Login(request);
                 if (user == null)
-                    throw new ArgumentNullException(nameof(user));
+                    return StatusCode(500);
 
                 var tokenResponse = _tokenService.GenerateToken(user);                
 
@@ -54,6 +54,7 @@ namespace WebApi.Controllers
         {
             try
             {
+                var tokenUser = CurrentUser;
                 var values = await _userService.GetUserList();
                 return Ok(values);
             }

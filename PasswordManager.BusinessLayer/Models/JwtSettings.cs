@@ -1,4 +1,4 @@
-﻿namespace WebApi.Models
+﻿namespace PasswordManager.BusinessLayer.Models
 {
     public class JwtSettings
     {

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PasswordManager.BusinessLayer.Abstract;
+using PasswordManager.BusinessLayer.Models;
 using PasswordManager.Core.Entity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -26,6 +27,7 @@ namespace PasswordManager.BusinessLayer.Concrete
             {
                 throw new ArgumentNullException(nameof(_jwtSettings));
             }
+
             SymmetricSecurityKey symmetricSecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Secret));
 
             var claims = new List<Claim>()

@@ -6,15 +6,10 @@ using System.Text;
 
 namespace PasswordManager.WebApp.Services.Concrete
 {
-    public class CategoryService : BaseService<CategoryResponse> ,ICategoryService
+    public class CategoryClientService : BaseService<CategoryResponse> ,ICategoryClientService
     {
-        private readonly HttpClient _httpClient;        
-
-        public CategoryService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor) : base(httpClient,httpContextAccessor)
+        public CategoryClientService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor) : base(httpClient,httpContextAccessor)
         {
-            _httpClient = httpClient;          
-
-            _httpClient.BaseAddress = new Uri("https://localhost:7014/");
         }
 
         public async Task Add(CategoryResponse value)
@@ -23,13 +18,13 @@ namespace PasswordManager.WebApp.Services.Concrete
             //json a çevirme
             var content = new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
             //post isteği
-            await _httpClient.PostAsync("api/Category/AddCategory", content);
+            await _httpClient.PostAsync("AddCategory", content);
         }
 
         public async Task<CategoryResponse> Get(int id)
         {
             tokenAuth();
-            var response = await _httpClient.GetAsync($"api/Category/GetCategory?id={id}");
+            var response = await _httpClient.GetAsync($"GetCategory?id={id}");
             var jsonString = await response.Content.ReadAsStringAsync();
             var categories = JsonConvert.DeserializeObject<CategoryResponse>(jsonString);
             return categories;
@@ -38,7 +33,7 @@ namespace PasswordManager.WebApp.Services.Concrete
         public async Task<List<CategoryResponse>> GetAll()
         {
             tokenAuth();
-            var response = await _httpClient.GetAsync("api/Category/GetAllCategory");
+            var response = await _httpClient.GetAsync("GetAllCategory");
             var jsonString = await response.Content.ReadAsStringAsync();
             var categories = JsonConvert.DeserializeObject<List<CategoryResponse>>(jsonString);
             return categories;
@@ -47,14 +42,14 @@ namespace PasswordManager.WebApp.Services.Concrete
         public async Task Remove(int id)
         {
             tokenAuth();
-            await _httpClient.DeleteAsync($"api/Category/RemoveCategory?id={id}");
+            await _httpClient.DeleteAsync($"RemoveCategory?id={id}");
         }
 
         public async Task Update(CategoryResponse value)
         {
             tokenAuth();
             var content = new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
-            await _httpClient.PutAsync("api/Category/UpdateCategory", content);
+            await _httpClient.PutAsync("UpdateCategory", content);
         }
     }
 }

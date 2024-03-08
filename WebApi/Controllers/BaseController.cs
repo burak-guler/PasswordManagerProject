@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PasswordManager.Core.Entity;
+using PasswordManager.Core.Models;
 
 namespace WebApi.Controllers
 {
@@ -11,22 +14,31 @@ namespace WebApi.Controllers
     public class BaseController : ControllerBase
     {
         private IHttpContextAccessor _contextAccessor;
+        private IMemoryCache _memoryCache;
 
-        public BaseController(IHttpContextAccessor contextAccessor)
+        public BaseController(IHttpContextAccessor contextAccessor, IMemoryCache memoryCache)
         {
             _contextAccessor = contextAccessor;
-        }
-
-        protected User CurrentUser
+            _memoryCache = memoryCache;
+        }        
+        
+        protected UserTokenResponse CurrentUser
         {
             get
             {
-                var currentUserJson = _contextAccessor.HttpContext.Session.GetString("CurrentUser");
-
-                if (currentUserJson != null) 
-                    return JsonConvert.DeserializeObject<User>(currentUserJson);
-
-                return null;
+                string token = _contextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                if (string.IsNullOrEmpty(token))
+                {
+                    return null;
+                }
+                if (_memoryCache.TryGetValue<UserTokenResponse>(token, out UserTokenResponse currentUser))
+                {                    
+                    return currentUser;
+                }
+                else
+                {                    
+                    return null;
+                }                
             }
         }
         

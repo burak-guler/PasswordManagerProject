@@ -2,7 +2,7 @@
 
 namespace PasswordManager.WebApp.Services.Abstract
 {
-    public interface IUserService : IBaseService<UserResponse>
+    public interface IUserClientService : IBaseService<UserResponse>
     {
         Task<UserLoginResponse> Login(UserResponse user);
     }
