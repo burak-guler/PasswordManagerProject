@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using PasswordManager.WebApp.Models;
+using PasswordManager.Core.Entity;
 using PasswordManager.WebApp.Services.Abstract;
 
 namespace PasswordManager.WebApp.Controllers
@@ -31,6 +31,21 @@ namespace PasswordManager.WebApp.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetAllBYCompanyIDPassword(int companyId)
+        {
+            try
+            {
+
+                var values = await _passwordService.GetAllByCompanyId(companyId);
+                return Ok(values);
+            }
+            catch (Exception ex)
+            {               
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetPassword(int id)
         {
             try
@@ -51,7 +66,7 @@ namespace PasswordManager.WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPassword([FromBody] PasswordResponse password)
+        public async Task<IActionResult> AddPassword([FromBody] Password password)
         {
             try
             {
@@ -67,7 +82,7 @@ namespace PasswordManager.WebApp.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdatePassword([FromBody] PasswordResponse password)
+        public async Task<IActionResult> UpdatePassword([FromBody] Password password)
         {
             try
             {
@@ -91,6 +106,26 @@ namespace PasswordManager.WebApp.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, "hata: " + ex.Message);
+            }
+        }
+
+
+        //LKP_PasswordAcces Add
+        [HttpPost]
+        public async Task<IActionResult> AddUserToPassword(int passwordID, int userID, int roleID)
+        {
+            try
+            {
+                if (roleID > 0 && userID > 0 && passwordID > 0)
+                {
+                    await _passwordService.AddUserToPasswordAcces(passwordID, userID, roleID);
+                    return Ok();
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {               
+                return StatusCode(500, ex.Message);
             }
         }
     }

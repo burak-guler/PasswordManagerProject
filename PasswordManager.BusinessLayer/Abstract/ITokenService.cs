@@ -1,5 +1,5 @@
 ﻿using PasswordManager.Core.Entity;
-using WebApi.Models;
+using PasswordManager.Core.Models;
 
 namespace PasswordManager.BusinessLayer.Abstract
 {

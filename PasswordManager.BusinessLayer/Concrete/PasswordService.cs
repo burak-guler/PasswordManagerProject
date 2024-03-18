@@ -1,5 +1,6 @@
 ﻿using PasswordManager.BusinessLayer.Abstract;
 using PasswordManager.Core.Entity;
+using PasswordManager.Core.Models;
 using PasswordManager.DataAccessLayer.Abstract;
 using System;
 using System.Collections.Generic;
@@ -18,29 +19,43 @@ namespace PasswordManager.BusinessLayer.Concrete
             _passwordRepository = passwordRepository;
         }
 
-        public async Task< Password> GetPassword(int id)
+        public async Task Add(Password entity)
+        {
+            //rsa
+            //aes
+            //public & private key
+
+            await _passwordRepository.Add(entity);
+        }
+
+        public async Task<List<Password>> GetAll()
+        {
+            return await _passwordRepository.List();
+        }
+
+        public async Task<Password> GetById(int id)
         {
             return await _passwordRepository.Get(id);
         }
 
-        public async Task< List<Password>> GetPasswordList()
+        public async Task Remove(int id)
         {
-           return await _passwordRepository.List();
+            await _passwordRepository.Remove(id);
         }
 
-        public async Task PasswordAdd(Password password)
+        public async Task Update(Password entity)
         {
-           await _passwordRepository.Add(password);
+            await _passwordRepository.Update(entity);
         }
 
-        public async Task PasswordRemove(int id)
+        public async Task AddUserToPasswordAcces(int passwordID, int userID, int roleID)
         {
-           await _passwordRepository.Remove(id);
+            await _passwordRepository.AddUserToPasswordAcces(passwordID,userID,roleID);
         }
 
-        public async Task PasswordUpdate(Password password)
+        public async Task<List<Password>> GetAllByCompanyId(int companyId)
         {
-            await _passwordRepository.Update(password);
+            return await _passwordRepository.GetAllByCompanyId(companyId);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PasswordManager.WebApp.Models;
+using PasswordManager.Core.Entity;
 using PasswordManager.WebApp.Services.Abstract;
 
 namespace PasswordManager.WebApp.Controllers
@@ -34,6 +34,21 @@ namespace PasswordManager.WebApp.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetAllBYCompanyIDCategory(int companyId)
+        {
+            try
+            {
+
+                var values = await _categoryService.GetAllByCompanyId(companyId);
+                return Ok(values);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetCategory(int id)
         {
             try
@@ -52,7 +67,7 @@ namespace PasswordManager.WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCategory([FromBody] CategoryResponse category)
+        public async Task<IActionResult> AddCategory([FromBody] Category category)
         {
             try
             {
@@ -67,7 +82,7 @@ namespace PasswordManager.WebApp.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCategory([FromBody] CategoryResponse category)
+        public async Task<IActionResult> UpdateCategory([FromBody] Category category)
         {
             try
             {

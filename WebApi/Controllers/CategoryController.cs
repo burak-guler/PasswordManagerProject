@@ -25,7 +25,7 @@ namespace WebApi.Controllers
             {
                 var user = CurrentUser;
 
-                var values = await _categoryService.GetCategoryList();
+                var values = await _categoryService.GetAll();
                 return Ok(values);
             }
             catch (Exception ex)
@@ -37,11 +37,28 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetAllBYCompanyIDCategory(int companyId)
+        {
+            try
+            {
+
+                var values = await _categoryService.GetAllByCompanyId(companyId);
+                return Ok(values);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.Error("HATA-GetAllBYCompanyIDCategory:" + ex.ToString());
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetCategory(int id)
         {
             try
             {
-                var category = await _categoryService.GetCategory(id);
+                var category = await _categoryService.GetById(id);
                 if (category == null)
                 {
                     return NotFound();
@@ -63,7 +80,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _categoryService.CategoryAdd(category);
+                await _categoryService.Add(category);
                 return Ok();
             }
             catch (Exception ex)
@@ -79,7 +96,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _categoryService.CategoryUpdate(category);
+                await _categoryService.Update(category);
                 return Ok();
             }
             catch (Exception ex)
@@ -96,7 +113,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _categoryService.CategoryRemove(id);
+                await _categoryService.Remove(id);
                 return Ok();
             }
             catch (Exception ex)

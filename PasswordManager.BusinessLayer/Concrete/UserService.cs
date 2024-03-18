@@ -1,12 +1,12 @@
 ﻿using PasswordManager.BusinessLayer.Abstract;
 using PasswordManager.Core.Entity;
+using PasswordManager.Core.Models;
 using PasswordManager.DataAccessLayer.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebApi.Models;
 
 namespace PasswordManager.BusinessLayer.Concrete
 {
@@ -19,34 +19,45 @@ namespace PasswordManager.BusinessLayer.Concrete
             _userRepository = userRepository;
         }
 
-        public async Task<User> GetUser(int id)
+        public async Task Add(User entity)
         {
-           return await _userRepository.Get(id);
+            await _userRepository.Add(entity);
         }
 
-        public async Task< List<User>> GetUserList()
+        public async Task AddUserToRole(int userID, int roleID)
         {
-           return await _userRepository.List();
+            await _userRepository.AddUserToRole(userID, roleID);
+        }
+
+        public async Task<List<User>> GetAll()
+        {
+            return await _userRepository.List();
+        }
+
+        public async Task<List<User>> GetAllByCompanyId(int companyId)
+        {
+            return await _userRepository.GetAllByCompanyId(companyId);
+        }
+
+        public async Task<User> GetById(int id)
+        {
+            return await _userRepository.Get(id);
         }
 
         public async Task<User> Login(User user)
         {
            return await _userRepository.Login(user);
-        }        
-
-        public async Task UserAdd(User user)
-        {
-            await _userRepository.Add(user);
         }
 
-        public async Task UserRemove(int id)
+        public async Task Remove(int id)
         {
-           await _userRepository.Remove(id);
+            await _userRepository.Remove(id);
         }
 
-        public async Task UserUpdate(User user)
+        public async Task Update(User entity)
         {
-          await  _userRepository.Update(user);
+            await _userRepository.Update(entity);
         }
+        
     }
 }

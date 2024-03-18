@@ -24,7 +24,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var values = await _passwordService.GetPasswordList();
+                var values = await _passwordService.GetAll();
                 return Ok(values);
             }
             catch (Exception ex)
@@ -36,11 +36,28 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetAllBYCompanyIDPassword(int companyId)
+        {
+            try
+            {
+
+                var values = await _passwordService.GetAllByCompanyId(companyId);
+                return Ok(values);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.Error("HATA-GetAllBYCompanyIDPassword:" + ex.ToString());
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetPassword(int id)
         {
             try
             {
-                var value = await _passwordService.GetPassword(id);
+                var value = await _passwordService.GetById(id);
                 if (value == null)
                 {
                     return NotFound();
@@ -61,7 +78,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _passwordService.PasswordAdd(password);
+                await _passwordService.Add(password);
                 return Ok();
             }
             catch (Exception ex)
@@ -78,7 +95,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _passwordService.PasswordUpdate(password);
+                await _passwordService.Update(password);
                 return Ok();
             }
             catch (Exception ex)
@@ -93,13 +110,34 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _passwordService.PasswordRemove(id);
+                await _passwordService.Remove(id);
                 return Ok();
             }
             catch (Exception ex)
             {
                 _logger.Error("HATA-RemovePassword:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
+            }
+        }
+
+        //LKP_PasswordAcces Add
+        [HttpPost]
+        public async Task<IActionResult> AddUserToPassword(int passwordID,int userID, int roleID)
+        {
+            try
+            {
+                if (roleID > 0 && userID > 0 && passwordID > 0)
+                {
+                    await _passwordService.AddUserToPasswordAcces(passwordID, userID, roleID);
+                    return Ok();
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+
+                _logger.Error("Hata-AddUserToPassword" + ex.ToString());
+                return StatusCode(500, ex.Message);
             }
         }
     }

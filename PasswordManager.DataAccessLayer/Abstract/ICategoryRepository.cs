@@ -9,6 +9,6 @@ namespace PasswordManager.DataAccessLayer.Abstract
 {
     public interface ICategoryRepository : IRepository<Category>
     {
-
+        Task<List<Category>> GetAllByCompanyId(int companyId);
     }
 }

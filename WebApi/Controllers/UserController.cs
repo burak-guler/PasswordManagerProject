@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using PasswordManager.BusinessLayer.Abstract;
+using PasswordManager.BusinessLayer.Concrete;
 using PasswordManager.Core.Entity;
 
 namespace WebApi.Controllers
@@ -55,7 +56,7 @@ namespace WebApi.Controllers
             try
             {
                 var tokenUser = CurrentUser;
-                var values = await _userService.GetUserList();
+                var values = await _userService.GetAll();
                 return Ok(values);
             }
             catch (Exception ex)
@@ -66,12 +67,30 @@ namespace WebApi.Controllers
             
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllBYCompanyIDUser(int companyId)
+        {
+            try
+            {
+
+                var values = await _userService.GetAllByCompanyId(companyId);
+                return Ok(values);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.Error("HATA-GetAllBYCompanyIDUser:" + ex.ToString());
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetUser(int id)
         {
             try
             {
-                var value = await _userService.GetUser(id);
+                var value = await _userService.GetById(id);
                 if (value == null)
                 {
                     return NotFound();
@@ -91,7 +110,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _userService.UserAdd(user);
+                await _userService.Add(user);
                 return Ok();
             }
             catch (Exception ex)
@@ -107,7 +126,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _userService.UserUpdate(user);
+                await _userService.Update(user);
                 return Ok();
             }
             catch (Exception ex)
@@ -123,13 +142,34 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _userService.UserRemove(id);
+                await _userService.Remove(id);
                 return Ok();
             }
             catch (Exception ex)
             {
                 _logger.Error("HATA-RemoveUser:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
+            }
+        }
+
+        //LKP_UserRole Add
+        [HttpPost]
+        public async Task<IActionResult> AddUserToRole(int userID, int roleID)
+        {
+            try
+            {
+                if (roleID > 0 && userID > 0)
+                {
+                    await _userService.AddUserToRole(userID, roleID);
+                    return Ok();
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+
+                _logger.Error("Hata-AddUserToRole" + ex.ToString());
+                return StatusCode(500, ex.Message);
             }
         }
     }

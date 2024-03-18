@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.BusinessLayer.Abstract
 {
-    public interface ICategoryService
+    public interface ICategoryService : IBaseService<Category>
     {
-        Task <List<Category>> GetCategoryList();
-        Task CategoryAdd(Category category);
-        Task<Category> GetCategory(int id);
-        Task CategoryRemove(int id);
-        Task CategoryUpdate(Category category);
+        Task<List<Category>> GetAllByCompanyId(int companyId);
     }
 }

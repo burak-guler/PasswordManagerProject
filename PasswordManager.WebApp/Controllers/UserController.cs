@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PasswordManager.WebApp.Models;
+using PasswordManager.Core.Entity;
 using PasswordManager.WebApp.Services.Abstract;
 
 namespace PasswordManager.WebApp.Controllers
@@ -18,7 +18,7 @@ namespace PasswordManager.WebApp.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] UserResponse request)
+        public async Task<IActionResult> Login([FromBody] User request)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace PasswordManager.WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUser([FromBody] UserResponse user)
+        public async Task<IActionResult> AddUser([FromBody] User user)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace PasswordManager.WebApp.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateUser([FromBody] UserResponse user)
+        public async Task<IActionResult> UpdateUser([FromBody] User user)
         {
             try
             {
@@ -115,6 +115,25 @@ namespace PasswordManager.WebApp.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, "hata: " + ex.Message);
+            }
+        }
+
+        //LKP_UserRole Add
+        [HttpPost]
+        public async Task<IActionResult> AddUserToRole(int userID, int roleID)
+        {
+            try
+            {
+                if (roleID > 0 && userID > 0)
+                {
+                    await _userService.AddUserToRole(userID, roleID);
+                    return Ok();
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
             }
         }
     }

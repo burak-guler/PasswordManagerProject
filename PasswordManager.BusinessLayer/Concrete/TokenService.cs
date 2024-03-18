@@ -7,7 +7,7 @@ using PasswordManager.Core.Entity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using WebApi.Models;
+using PasswordManager.Core.Models;
 
 namespace PasswordManager.BusinessLayer.Concrete
 {

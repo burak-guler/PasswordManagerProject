@@ -1,4 +1,4 @@
-﻿namespace WebApi.Models
+﻿namespace PasswordManager.Core.Models
 {
     public class LoginResponse
     {

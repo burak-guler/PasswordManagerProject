@@ -1,4 +1,4 @@
-﻿using PasswordManager.WebApp.Models;
+﻿using PasswordManager.Core.Entity;
 
 namespace PasswordManager.WebApp.Services.Abstract
 {
@@ -8,6 +8,6 @@ namespace PasswordManager.WebApp.Services.Abstract
         Task Add(T value);
         Task<T> Get(int id);
         Task Remove(int id);
-        Task Update(T value);
+        Task Update(T value);        
     }
 }

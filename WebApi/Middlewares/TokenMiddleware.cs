@@ -38,41 +38,39 @@ namespace WebApi.Middlewares
                         return;
                     }
 
-                    var jwtSecurityToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
-
-                    if (jwtSecurityToken == null)
-                    {
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        await context.Response.WriteAsync("Yetkilendirme Eksik.");
-                        return;
-                    }
-
-                    var userId = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == "UserID")?.Value;
-                    var userName = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == "UserName")?.Value;
-                    var password = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == "Password")?.Value;
-
-                    //todo: claim değerlerinin varlığını kontrol et
-                    if (userId == null && userName == null && password == null)
-                    {
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        await context.Response.WriteAsync("Yetkilendirme Eksik.");
-                        return;
-                    }
-
-
-                    UserTokenResponse userTokenResponse = new UserTokenResponse()
-                    {
-                        UserID = Convert.ToInt32(userId),
-                        UserName = userName,
-                        Password = password,
-                        AuthToken= token
-                    };
-
-                    //_contextAccessor.HttpContext.Session.SetString("CurrentUser", JsonConvert.SerializeObject(user));
-                   
-
                     if (!_memoryCache.TryGetValue(token, out UserTokenResponse value))
                     {
+
+                        var jwtSecurityToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
+
+                        if (jwtSecurityToken == null)
+                        {
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            await context.Response.WriteAsync("Yetkilendirme Eksik.");
+                            return;
+                        }
+
+                        var userId = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == "UserID")?.Value;
+                        var userName = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == "UserName")?.Value;
+                        var password = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == "Password")?.Value;
+
+                        //todo: claim değerlerinin varlığını kontrol et
+                        if (userId == null && userName == null && password == null)
+                        {
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            await context.Response.WriteAsync("Yetkilendirme Eksik.");
+                            return;
+                        }
+
+
+                        UserTokenResponse userTokenResponse = new UserTokenResponse()
+                        {
+                            UserID = Convert.ToInt32(userId),
+                            UserName = userName,
+                            Password = password,
+                            AuthToken= token
+                        };
+
                         _memoryCache.Set<UserTokenResponse>(token, userTokenResponse);
                     }
 

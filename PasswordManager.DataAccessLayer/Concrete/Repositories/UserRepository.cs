@@ -2,6 +2,7 @@
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using PasswordManager.Core.Entity;
+using PasswordManager.Core.Models;
 using PasswordManager.DataAccessLayer.Abstract;
 using PasswordManager.DataAccessLayer.Concrete.Query;
 using System;
@@ -10,7 +11,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebApi.Models;
+
 
 namespace PasswordManager.DataAccessLayer.Concrete.Repositories
 {
@@ -58,6 +59,19 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
             var connection = await ConnectionDb();
             await connection.ExecuteAsync(UserQuery.UPDATE,value);
         }
-       
+
+        public async Task AddUserToRole(int userID , int roleID)
+        {
+            var connection = await ConnectionDb();
+
+            await connection.ExecuteAsync(UserQuery.UserRoleADD, new {UserID = userID , RoleID = roleID});
+        }
+
+        public async Task<List<User>> GetAllByCompanyId(int companyId)
+        {
+            var connection = await ConnectionDb();
+            return (await connection.QueryAsync<User>(UserQuery.GET_LIST_COMPANYID, new { companyId }))?
+                .ToList();
+        }
     }
 }

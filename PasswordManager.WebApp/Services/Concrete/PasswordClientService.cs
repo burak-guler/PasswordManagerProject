@@ -1,19 +1,19 @@
 ﻿using Newtonsoft.Json;
-using PasswordManager.WebApp.Models;
+using PasswordManager.Core.Entity;
 using PasswordManager.WebApp.Services.Abstract;
 using System.Net.Http.Headers;
 using System.Text;
 
 namespace PasswordManager.WebApp.Services.Concrete
 {
-    public class PasswordClientService : BaseService<PasswordResponse> ,IPasswordClientService
+    public class PasswordClientService : BaseService<Password> ,IPasswordClientService
     {
         public PasswordClientService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor) : base(httpClient, httpContextAccessor)
         {
             
         }
 
-        public async Task Add(PasswordResponse value)
+        public async Task Add(Password value)
         {
             tokenAuth();
             //json a çevirme
@@ -22,21 +22,39 @@ namespace PasswordManager.WebApp.Services.Concrete
             await _httpClient.PostAsync("AddPassword", content);
         }
 
-        public async Task<PasswordResponse> Get(int id)
+       
+
+        public async Task AddUserToPasswordAcces(int passwordID, int userID, int roleID)
+        {
+            tokenAuth();
+            string url = $"AddUserToPassword?passwordID={passwordID}&userID={userID}&roleID={roleID}";
+            await _httpClient.PostAsync(url, null);
+        }
+
+        public async Task<Password> Get(int id)
         {
             tokenAuth();
             var response = await _httpClient.GetAsync($"GetPassword/?id={id}");
             var jsonString = await response.Content.ReadAsStringAsync();
-            var getPassword = JsonConvert.DeserializeObject<PasswordResponse>(jsonString);
+            var getPassword = JsonConvert.DeserializeObject<Password>(jsonString);
             return getPassword;
         }
 
-        public async Task<List<PasswordResponse>> GetAll()
+        public async Task<List<Password>> GetAll()
         {
             tokenAuth();
             var response = await _httpClient.GetAsync("GetAllPassword");
             var jsonString = await response.Content.ReadAsStringAsync();
-            var Allpassword = JsonConvert.DeserializeObject<List<PasswordResponse>>(jsonString);
+            var Allpassword = JsonConvert.DeserializeObject<List<Password>>(jsonString);
+            return Allpassword;
+        }
+
+        public async Task<List<Password>> GetAllByCompanyId(int companyId)
+        {
+            tokenAuth();
+            var response = await _httpClient.GetAsync($"GetAllBYCompanyIDPassword?companyId={companyId}");
+            var jsonString = await response.Content.ReadAsStringAsync();
+            var Allpassword = JsonConvert.DeserializeObject<List<Password>>(jsonString);
             return Allpassword;
         }
 
@@ -46,12 +64,13 @@ namespace PasswordManager.WebApp.Services.Concrete
            await _httpClient.DeleteAsync($"RemovePassword?id={id}");
         }
 
-        public async Task Update(PasswordResponse value)
+        public async Task Update(Password value)
         {
             tokenAuth();
             var content = new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
 
             await _httpClient.PutAsync("UpdatePassword", content);
         }
+       
     }
 }

@@ -1,4 +1,5 @@
 ﻿using PasswordManager.Core.Entity;
+using PasswordManager.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,7 @@ namespace PasswordManager.DataAccessLayer.Abstract
 {
     public interface IPasswordRepository : IRepository<Password>
     {
+        Task AddUserToPasswordAcces(int passwordID, int userID, int roleID);
+        Task<List<Password>> GetAllByCompanyId(int companyId);
     }
 }

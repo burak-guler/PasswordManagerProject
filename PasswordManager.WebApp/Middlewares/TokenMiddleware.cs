@@ -23,11 +23,18 @@ namespace PasswordManager.WebApp.Middlewares
         {
             try
             {
-                if (!context.Request.Path.Value.Equals("/User/Login"))
+                if (!context.Request.Path.Value.Equals("/User/Login") && !context.Request.Path.Value.Equals("/"))
                 {
+                    if (!context.Request.Headers["Authorization"].Any())
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        await context.Response.WriteAsync("Yetkilendirme Eksik.");
+                        return;
+                    }
+
                     var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-                    if (token == null)
+                    if (string.IsNullOrEmpty(token))
                     {
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         await context.Response.WriteAsync("Yetkilendirme Eksik.");

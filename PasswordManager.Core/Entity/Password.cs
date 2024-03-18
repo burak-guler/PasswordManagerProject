@@ -11,8 +11,11 @@ namespace PasswordManager.Core.Entity
     {
         [Key]
         public int PasswordID { get; set; }
-        public int UserID { get; set; }
+        public int UserID { get; set; }        
         public int CategoryID { get; set; }
         public string PasswordValue { get; set; }
+        public int LevelID { get; set; }
+        public int CompanyID { get; set; }
+        public bool IsActive { get; set; }
     }
 }

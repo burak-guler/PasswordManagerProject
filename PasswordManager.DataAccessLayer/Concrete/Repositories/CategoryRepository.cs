@@ -31,6 +31,13 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
             return await connection.QueryFirstOrDefaultAsync<Category>(CategoryQuery.GET, new { id });
         }
 
+        public async Task<List<Category>> GetAllByCompanyId(int companyId)
+        {
+            var connection = await ConnectionDb();
+            return (await connection.QueryAsync<Category>(CategoryQuery.GET_LIST_COMPANYID, new { companyId }))?
+                .ToList();
+        }
+
         public async Task<List<Category>> List()
         {
             var connection = await ConnectionDb();

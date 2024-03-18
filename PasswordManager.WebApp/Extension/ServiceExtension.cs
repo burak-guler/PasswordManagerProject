@@ -13,14 +13,42 @@ namespace PasswordManager.WebApp.Extension
             {
                 o.BaseAddress = new Uri($"{BasePath}{UrlHelperClient.UserService}");
             });
+
             services.AddHttpClient<IPasswordClientService, PasswordClientService>(o =>
             {
                 o.BaseAddress = new Uri($"{BasePath}{UrlHelperClient.PasswordService}");
             });
+
             services.AddHttpClient<ICategoryClientService, CategoryClientService>(o =>
             {
                 o.BaseAddress = new Uri($"{BasePath}{UrlHelperClient.CategoryService}");
-            });          
+            });
+
+            services.AddHttpClient<ICompanyClientService, CompanyClientService>(o =>
+            {
+                o.BaseAddress = new Uri($"{BasePath}{UrlHelperClient.CompanyService}");
+            });
+
+            services.AddHttpClient<IGroupClientService, GroupClientService>(o =>
+            {
+                o.BaseAddress = new Uri($"{BasePath}{UrlHelperClient.GroupService}");
+            });
+
+            services.AddHttpClient<ILogClientService, LogClientService>(o =>
+            {
+                o.BaseAddress = new Uri($"{BasePath}{UrlHelperClient.LogService}");
+            });
+
+            services.AddHttpClient<INotificationQueueClientService, NotificationQueueClientService>(o =>
+            {
+                o.BaseAddress = new Uri($"{BasePath}{UrlHelperClient.NotificationQueueService}");
+            });
+
+            services.AddHttpClient<IUserLevelClientService, UserLevelClientService>(o =>
+            {
+                o.BaseAddress = new Uri($"{BasePath}{UrlHelperClient.UserLevelService}");
+            });
+            
             return services;
         }
 

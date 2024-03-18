@@ -1,21 +1,18 @@
 ﻿using PasswordManager.Core.Entity;
+using PasswordManager.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebApi.Models;
 
 
 namespace PasswordManager.BusinessLayer.Abstract
 {
-    public interface IUserService
+    public interface IUserService : IBaseService<User>
     {
-        Task< List<User>> GetUserList();
-        Task UserAdd(User user);
-        Task<User> GetUser(int id);
-        Task UserRemove(int id);
-        Task UserUpdate(User user);
-        Task<User> Login(User user);     
+        Task<User> Login(User user);
+        Task AddUserToRole(int userID, int roleID);
+        Task<List<User>> GetAllByCompanyId(int companyId);
     }
 }

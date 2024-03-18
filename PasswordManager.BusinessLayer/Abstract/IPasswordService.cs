@@ -1,4 +1,5 @@
 ﻿using PasswordManager.Core.Entity;
+using PasswordManager.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +8,9 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.BusinessLayer.Abstract
 {
-    public interface IPasswordService
+    public interface IPasswordService : IBaseService<Password>
     {
-        Task< List<Password>> GetPasswordList();
-        Task PasswordAdd(Password password);
-        Task <Password> GetPassword(int id);
-        Task PasswordRemove(int id);
-        Task PasswordUpdate(Password password);
+        Task AddUserToPasswordAcces(int passwordID, int userID, int roleID);
+        Task<List<Password>> GetAllByCompanyId(int companyId);
     }
 }
