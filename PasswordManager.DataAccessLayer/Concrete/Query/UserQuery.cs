@@ -30,6 +30,12 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
 
         public static readonly string USER_NAME_CHECK = @"select * from Tbl_Users where UserName = @UserName";
 
+
+        public static readonly string ROLE_CHECK = @"SELECT u.*
+                                                    FROM Tbl_Users u
+                                                    INNER JOIN Lkp_UserRole ur ON u.UserID = ur.UserID
+                                                    WHERE ur.RoleID =@RoleID AND u.UserID =@UserID;";
+
         //UserRole Queery
         public static readonly string UserRoleADD = @"
                                         INSERT INTO dbo.Lkp_UserRole 

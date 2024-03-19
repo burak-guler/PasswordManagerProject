@@ -49,6 +49,14 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
                 update Lang_Group  set GroupName=@GroupName, GroupDescription=@GroupDescription
                 where GroupID=@GroupID and LangID=@LangID ";
 
+        //userıd ve role ıd ye göre kişinin girmiş olduğu grupta istenilen rol varmı yokmu sorgusu;
+        public static readonly string USERGROUP_ROLE_CHECK = @"SELECT g.*
+                                                            FROM Tbl_Users u
+                                                            INNER JOIN Lkp_UserGroup ug ON u.UserID = ug.UserID
+                                                            INNER JOIN Tbl_Group g ON ug.GroupID = g.GroupID
+                                                            INNER JOIN Lkp_GroupRole gr ON g.GroupID = gr.GroupID
+                                                            WHERE u.UserID =@UserID AND gr.RoleID =@RoleID;";
+
         //GroupRole Query
         public static readonly string GroupRoleADD = @"
                                         INSERT INTO dbo.Lkp_GroupRole 

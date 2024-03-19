@@ -80,9 +80,9 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = await _userService.GetById(CurrentUser.UserID);
-                int levelID = user.LevelID;
-                await _passwordService.Add(password, levelID);
+                //var user = await _userService.GetById(CurrentUser.UserID);
+                //int levelID = user.LevelID;
+                await _passwordService.Add(password, CurrentUser.UserID);
                 return Ok();
             }
             catch (Exception ex)

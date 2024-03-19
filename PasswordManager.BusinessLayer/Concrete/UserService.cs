@@ -26,8 +26,9 @@ namespace PasswordManager.BusinessLayer.Concrete
 
         public async Task Add(User entity, int? id)
         {
-            var level = await _userLevelRepository.Get(id.Value);
-            if (level != null)
+            var user = await _userRepository.Get(id.Value);
+            var level = await _userLevelRepository.Get(user.LevelID);
+            if (user != null)
             {
                 if (level.LevelName == "Admin")
                 {

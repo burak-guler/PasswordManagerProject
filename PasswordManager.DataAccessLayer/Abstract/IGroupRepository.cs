@@ -12,6 +12,7 @@ namespace PasswordManager.DataAccessLayer.Abstract
     {
         Task AddUserToGroup(int userID, int groupID);
         Task AddGroupToRole(int groupID, int roleID);
+        Task<Group> UserGroupRoleCheck(int userID, int roleID);
         Task<List<Group>> GetAllByCompanyId(int companyId);
     }
 }

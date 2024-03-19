@@ -11,6 +11,7 @@ namespace PasswordManager.Core.Entity
         public enum UserRole
         {
             PasswordAcces = 1,
+            CreatePassword=2,
         }
 
         public static readonly UserRole[] AllRoles = (UserRole[])Enum.GetValues(typeof(UserRole));

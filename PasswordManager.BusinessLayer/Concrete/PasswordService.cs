@@ -16,26 +16,40 @@ namespace PasswordManager.BusinessLayer.Concrete
     {
         private readonly IPasswordRepository _passwordRepository;
         private readonly IUserLevelRepository _userLevelRepository;
+        private readonly IUserRepository _userRepository;   
+        private readonly IGroupRepository _groupRepository;
 
-        public PasswordService(IPasswordRepository passwordRepository, IUserLevelRepository userLevelRepository)
+        public PasswordService(IPasswordRepository passwordRepository, IUserLevelRepository userLevelRepository, IUserRepository userRepository, IGroupRepository groupRepository)
         {
             _passwordRepository = passwordRepository;
             _userLevelRepository = userLevelRepository;
+            _userRepository = userRepository;
+            _groupRepository = groupRepository;
         }
 
         public async Task Add(Password entity, int? id)
         {
-            var level = await _userLevelRepository.Get(id.Value);
-            if (level != null)
+            var user = await _userRepository.Get(id.Value);
+
+            int roleID = (int)Role.UserRole.CreatePassword;
+
+            var userRoleCheck = _userRepository.RoleCheck(roleID, user.UserID);
+
+            var groupRoleCheck = _groupRepository.UserGroupRoleCheck(user.UserID,roleID);
+
+            if (user.LevelID >= entity.LevelID) 
             {
-                if (level.LevelName=="Admin")
+                if (userRoleCheck != null || groupRoleCheck != null)
                 {
                     entity.PasswordValue = Encrypt.OnPostEncrypt(entity.PasswordValue);
                     await _passwordRepository.Add(entity);
                 }
-                else { throw new UnauthorizedAccessException("Kullanıcı yetki dışı."); }
+                else
+                {
+                    throw new Exception("Kullanıcı rolü eksik");
+                }
             }
-            else { throw new UnauthorizedAccessException("Kullanıcı bulunamadı"); }
+            else { throw new Exception("Kullanıcı level seviyesi yetersiz");}
             
         }
 

@@ -20,7 +20,16 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
         public async Task Add(Company value)
         {
             var connection = await ConnectionDb();
-            await connection.ExecuteAsync(CompanyQuery.ADD, value);
+
+            UserLevel level = new UserLevel()
+            {
+                CreationDate = DateTime.Now,
+                IsActive = true,
+                LangID=1,
+                LevelName="Admin"
+            };
+
+            await connection.ExecuteAsync(CompanyQuery.ADD, new { CompanyName = value.CompanyName, IsActive = value.IsActive, CreationDate = level.CreationDate, LevelName = level.LevelName, LangID = level.LangID});
         }
 
         public async Task<Company> Get(int id)

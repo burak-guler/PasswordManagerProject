@@ -9,8 +9,19 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
     public static class CompanyQuery
     {
         public static readonly string ADD = @"
-                                            INSERT INTO dbo.Tbl_Company 
-                                            VALUES (@CompanyName,@IsActive)";
+                                            DECLARE @CompanyId INT;
+
+                                            INSERT INTO dbo.Tbl_Company (CompanyName, IsActive) 
+                                            VALUES (@CompanyName, @IsActive);
+                                            SET @CompanyId = SCOPE_IDENTITY();
+
+                                            DECLARE @UserLevelId INT;
+                                            INSERT INTO dbo.Tbl_UserLevel (CreationDate, IsActive, CompanyID) 
+                                            VALUES (@CreationDate, @IsActive, @CompanyId);
+                                            SET @UserLevelId = SCOPE_IDENTITY();
+
+                                            INSERT INTO dbo.Lang_UserLevel (LevelID, LangID, LevelName)
+                                            VALUES (@UserLevelId, @LangID,@LevelName);";
 
         public static readonly string GET = @"
                                             SELECT * FROM dbo.Tbl_Company 

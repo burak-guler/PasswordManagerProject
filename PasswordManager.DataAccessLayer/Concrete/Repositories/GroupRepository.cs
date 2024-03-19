@@ -64,5 +64,11 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
             var connection = await ConnectionDb();
             await connection.ExecuteAsync(GroupQuery.UPDATE, value);
         }
+
+        public async Task<Group>? UserGroupRoleCheck(int userID, int roleID)
+        {
+            var connection = await ConnectionDb();
+            return await connection.QueryFirstOrDefaultAsync<Group>(GroupQuery.USERGROUP_ROLE_CHECK, new { UserID = userID, RoleID = roleID });
+        }
     }
 }

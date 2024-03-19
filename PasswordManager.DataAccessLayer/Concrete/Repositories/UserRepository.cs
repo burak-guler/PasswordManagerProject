@@ -80,5 +80,12 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
             var value = await connection.QueryFirstOrDefaultAsync<User>(UserQuery.USER_NAME_CHECK, new { UserName = user.UserName });
             return value;
         }
+
+        public async Task<User>? RoleCheck(int roleID, int UserID)
+        {
+            var connection = await ConnectionDb();
+            var value = await connection.QueryFirstOrDefaultAsync<User>(UserQuery.ROLE_CHECK, new { RoleID = roleID, UserID = UserID });
+            return value;
+        }
     }
 }

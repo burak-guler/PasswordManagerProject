@@ -13,6 +13,7 @@ namespace PasswordManager.DataAccessLayer.Abstract
     {
         Task<User> Login(User user);
         Task<User> UserCheck(User user);
+        Task<User> RoleCheck(int roleID, int UserID);
         Task AddUserToRole(int userID, int roleID);
         Task<List<User>> GetAllByCompanyId(int companyId);
     }
