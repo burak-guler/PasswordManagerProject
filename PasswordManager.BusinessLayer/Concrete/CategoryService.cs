@@ -18,7 +18,7 @@ namespace PasswordManager.BusinessLayer.Concrete
             _categoryRepository = categoryRepository;
         }
 
-        public async Task Add(Category entity)
+        public async Task Add(Category entity, int? id)
         {
             await _categoryRepository.Add(entity);
         }    

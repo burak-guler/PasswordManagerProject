@@ -110,7 +110,9 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _userService.Add(user);
+                var userCurrent = await _userService.GetById(CurrentUser.UserID);
+                int levelID = userCurrent.LevelID;
+                await _userService.Add(user, levelID);
                 return Ok();
             }
             catch (Exception ex)

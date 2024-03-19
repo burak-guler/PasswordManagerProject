@@ -22,14 +22,14 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
                                                 where tbl.LevelID=@id and tbl.IsActive=1";
 
         public static readonly string GET_LIST = @"
-                                                select lang.LevelName,lang.LangID, tbl.CompanyID,tbl.IsActive,tbl.LevelID,                             tbl.CreationDate 
+                                                select lang.LevelName,lang.LangID,                                                         tbl.CompanyID,tbl.IsActive,tbl.LevelID,tbl.CreationDate 
                                                 from Tbl_UserLevel as tbl 
                                                 inner join Lang_UserLevel as lang 
                                                 on tbl.LevelID=lang.LevelID  
                                                 where tbl.IsActive=1";
 
         public static readonly string GET_LIST_COMPANYID = @"
-                                                select lang.LevelName,lang.LangID, tbl.CompanyID,tbl.IsActive,tbl.LevelID,                              tbl.CreationDate 
+                                                select lang.LevelName,lang.LangID,                                                        tbl.CompanyID,tbl.IsActive,tbl.LevelID,tbl.CreationDate 
                                                 from Tbl_UserLevel as tbl 
                                                 inner join Lang_UserLevel as lang 
                                                 on tbl.LevelID=lang.LevelID  

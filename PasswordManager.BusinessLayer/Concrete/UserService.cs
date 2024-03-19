@@ -1,7 +1,10 @@
-﻿using PasswordManager.BusinessLayer.Abstract;
+﻿using Microsoft.AspNetCore.Http;
+using PasswordManager.BusinessLayer.Abstract;
+using PasswordManager.BusinessLayer.Encryption;
 using PasswordManager.Core.Entity;
 using PasswordManager.Core.Models;
 using PasswordManager.DataAccessLayer.Abstract;
+using PasswordManager.DataAccessLayer.Concrete.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,15 +16,32 @@ namespace PasswordManager.BusinessLayer.Concrete
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserLevelRepository _userLevelRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IUserLevelRepository userLevelRepository)
         {
             _userRepository = userRepository;
+            _userLevelRepository = userLevelRepository;
         }
 
-        public async Task Add(User entity)
+        public async Task Add(User entity, int? id)
         {
-            await _userRepository.Add(entity);
+            var level = await _userLevelRepository.Get(id.Value);
+            if (level != null)
+            {
+                if (level.LevelName == "Admin")
+                {
+                    var userCheck = await _userRepository.UserCheck(entity);
+                    if (userCheck == null)
+                    {
+                        await _userRepository.Add(entity);
+                    }
+                    else { throw new InvalidOperationException("Kullanıcı Adını değiştirin."); }
+                }
+                else { throw new UnauthorizedAccessException("Kullanıcı yetki dışı."); }
+            }
+            else { throw new UnauthorizedAccessException("Kullanıcı bulunamadı"); }                     
+
         }
 
         public async Task AddUserToRole(int userID, int roleID)

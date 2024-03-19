@@ -28,6 +28,8 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
 
         public static readonly string LOGIN = @"select * from Tbl_Users where UserName = @UserName and Password = @Password";
 
+        public static readonly string USER_NAME_CHECK = @"select * from Tbl_Users where UserName = @UserName";
+
         //UserRole Queery
         public static readonly string UserRoleADD = @"
                                         INSERT INTO dbo.Lkp_UserRole 

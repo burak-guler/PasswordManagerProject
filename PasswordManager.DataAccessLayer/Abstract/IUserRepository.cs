@@ -12,6 +12,7 @@ namespace PasswordManager.DataAccessLayer.Abstract
     public interface IUserRepository : IRepository<User>
     {
         Task<User> Login(User user);
+        Task<User> UserCheck(User user);
         Task AddUserToRole(int userID, int roleID);
         Task<List<User>> GetAllByCompanyId(int companyId);
     }

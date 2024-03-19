@@ -19,7 +19,11 @@ namespace PasswordManager.WebApp.Services.Concrete
             //json a çevirme
             var content = new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
             //post isteği
-            await _httpClient.PostAsync("AddPassword", content);
+            var response =  await _httpClient.PostAsync("AddPassword", content);
+            if (!response.StatusCode.Equals(200))
+            {
+                throw new Exception();
+            }
         }
 
        

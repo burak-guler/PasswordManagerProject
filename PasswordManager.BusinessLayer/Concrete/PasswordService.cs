@@ -1,10 +1,12 @@
 ﻿using PasswordManager.BusinessLayer.Abstract;
+using PasswordManager.BusinessLayer.Encryption;
 using PasswordManager.Core.Entity;
 using PasswordManager.Core.Models;
 using PasswordManager.DataAccessLayer.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,19 +15,28 @@ namespace PasswordManager.BusinessLayer.Concrete
     public class PasswordService : IPasswordService
     {
         private readonly IPasswordRepository _passwordRepository;
+        private readonly IUserLevelRepository _userLevelRepository;
 
-        public PasswordService(IPasswordRepository passwordRepository)
+        public PasswordService(IPasswordRepository passwordRepository, IUserLevelRepository userLevelRepository)
         {
             _passwordRepository = passwordRepository;
+            _userLevelRepository = userLevelRepository;
         }
 
-        public async Task Add(Password entity)
+        public async Task Add(Password entity, int? id)
         {
-            //rsa
-            //aes
-            //public & private key
-
-            await _passwordRepository.Add(entity);
+            var level = await _userLevelRepository.Get(id.Value);
+            if (level != null)
+            {
+                if (level.LevelName=="Admin")
+                {
+                    entity.PasswordValue = Encrypt.OnPostEncrypt(entity.PasswordValue);
+                    await _passwordRepository.Add(entity);
+                }
+                else { throw new UnauthorizedAccessException("Kullanıcı yetki dışı."); }
+            }
+            else { throw new UnauthorizedAccessException("Kullanıcı bulunamadı"); }
+            
         }
 
         public async Task<List<Password>> GetAll()
@@ -35,7 +46,9 @@ namespace PasswordManager.BusinessLayer.Concrete
 
         public async Task<Password> GetById(int id)
         {
-            return await _passwordRepository.Get(id);
+            var value = await _passwordRepository.Get(id);
+            value.PasswordValue = Encrypt.Decrypt(value.PasswordValue);
+            return value;
         }
 
         public async Task Remove(int id)

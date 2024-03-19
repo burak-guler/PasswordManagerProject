@@ -10,10 +10,9 @@ namespace PasswordManager.Core.Entity
     {
         public enum UserRole
         {
-            Admin = 1,
-            Moderator = 2,
-            User = 3,
-            PasswordAcces = 4,
+            PasswordAcces = 1,
         }
+
+        public static readonly UserRole[] AllRoles = (UserRole[])Enum.GetValues(typeof(UserRole));
     }
 }

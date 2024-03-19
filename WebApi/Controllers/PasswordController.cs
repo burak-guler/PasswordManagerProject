@@ -13,10 +13,12 @@ namespace WebApi.Controllers
     {
         private IPasswordService _passwordService;
         private  ILog _logger;
-        public PasswordController(IPasswordService passwordService , IHttpContextAccessor httpContextAccessor, ILog log, IMemoryCache memoryCache) : base(httpContextAccessor, memoryCache)
+        private IUserService _userService;
+        public PasswordController(IPasswordService passwordService , IHttpContextAccessor httpContextAccessor, ILog log, IMemoryCache memoryCache, IUserService userService) : base(httpContextAccessor, memoryCache)
         {
             _passwordService = passwordService;
             _logger = log;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -78,7 +80,9 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _passwordService.Add(password);
+                var user = await _userService.GetById(CurrentUser.UserID);
+                int levelID = user.LevelID;
+                await _passwordService.Add(password, levelID);
                 return Ok();
             }
             catch (Exception ex)

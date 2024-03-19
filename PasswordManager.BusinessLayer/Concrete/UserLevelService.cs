@@ -18,7 +18,7 @@ namespace PasswordManager.BusinessLayer.Concrete
             _userLevelRepository = userLevelRepository;
         }
 
-        public async Task Add(UserLevel entity)
+        public async Task Add(UserLevel entity, int? id)
         {
            await _userLevelRepository.Add(entity);   
         }

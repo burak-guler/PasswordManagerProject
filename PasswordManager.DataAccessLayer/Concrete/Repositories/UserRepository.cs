@@ -73,5 +73,12 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
             return (await connection.QueryAsync<User>(UserQuery.GET_LIST_COMPANYID, new { companyId }))?
                 .ToList();
         }
+
+        public async Task<User>? UserCheck(User user)
+        {
+            var connection = await ConnectionDb();
+            var value = await connection.QueryFirstOrDefaultAsync<User>(UserQuery.USER_NAME_CHECK, new { UserName = user.UserName });
+            return value;
+        }
     }
 }

@@ -18,7 +18,7 @@ namespace PasswordManager.BusinessLayer.Concrete
             _logRepository = logRepository;
         }
 
-        public async Task Add(Log entity)
+        public async Task Add(Log entity, int? id)
         {
             await _logRepository.Add(entity);   
         }

@@ -18,7 +18,7 @@ namespace PasswordManager.BusinessLayer.Concrete
             _notificationQueueRepository = notificationQueueRepository;
         }
 
-        public async Task Add(NotificationQueue entity)
+        public async Task Add(NotificationQueue entity, int? id)
         {
             await _notificationQueueRepository.Add(entity);
         }

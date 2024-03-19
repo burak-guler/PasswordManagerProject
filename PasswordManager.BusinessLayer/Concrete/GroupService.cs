@@ -18,7 +18,7 @@ namespace PasswordManager.BusinessLayer.Concrete
         {
             _groupRepository = groupRepository;
         }
-        public async Task Add(Group entity)
+        public async Task Add(Group entity, int? id)
         {
             await _groupRepository.Add(entity);
         }
