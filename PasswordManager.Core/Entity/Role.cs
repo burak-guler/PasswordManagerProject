@@ -12,6 +12,8 @@ namespace PasswordManager.Core.Entity
         {
             PasswordAcces = 1,
             CreatePassword=2,
+            UpdatePassword=3,
+            RemovePassword=4,
         }
 
         public static readonly UserRole[] AllRoles = (UserRole[])Enum.GetValues(typeof(UserRole));

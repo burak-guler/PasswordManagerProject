@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.BusinessLayer.Concrete
 {
-    public class LogService : ILogService
+    public class LogService : BaseService<Log>, ILogService
     {
         private ILogRepository _logRepository;
 

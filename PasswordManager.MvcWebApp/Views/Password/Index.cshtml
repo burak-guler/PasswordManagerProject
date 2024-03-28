@@ -1,0 +1,102 @@
+﻿@using PasswordManager.Core.Models
+@model List<PasswordViewModels>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<head>
+    <!-- Diğer başlık etiketleri -->
+    <!-- jQuery CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<style>
+    .password-hidden {
+        display: none;
+    }
+</style>
+
+<div class="container-fluid pt-4 px-4">
+    @if (ViewBag.PasswordAdd != null)
+    {
+        @if (ViewBag.check)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fa fa-exclamation-circle me-2"></i>@ViewBag.PasswordAdd
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>            
+        }
+        else
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fa fa-exclamation-circle me-2"></i>@ViewBag.PasswordAdd
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+       
+    }
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Şifrelerim</h6>
+                <div class="table-responsive">                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Şifre Kategori</th>
+                                <th scope="col">Şifre Level</th>
+                                <th scope="col">Şirket</th>
+                                <th scope="col">Şifre</th>
+                                <th scope="col">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">#</th>
+                                    <td>@item.CategoryName</td>
+                                    <td>@item.LevelName</td>
+                                    <td>@item.CompanyName</td>
+                                    <td>
+                                        <span class="password-toggle" data-visible="false">
+                                            <i class="fa fa-eye" style="cursor: pointer;"></i>
+                                            <span class="password-value password-hidden">@item.PasswordValue</span>
+                                            <span class="password-mask">********</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="/Password/PasswordRemove/@item.PasswordID" class="btn btn-danger rounded-pill m-2">Sil</a>
+                                        <a href="/Password/PasswordUpdate/@item.PasswordID" class="btn btn-warning rounded-pill m-2">Güncelle</a>
+                                    </td>
+                                </tr>
+                            } 
+                        </tbody>
+                    </table>
+                    <a href="/Password/PasswordAdd/" class="btn btn-primary rounded-pill m-2">Şifre Ekle</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $('.password-toggle').click(function () {
+            var passwordVisible = $(this).data('visible');
+            if (passwordVisible) {
+                $(this).find('.password-value').addClass('password-hidden');
+                $(this).find('.password-mask').removeClass('password-hidden');
+                $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+            } else {
+                $(this).find('.password-value').removeClass('password-hidden');
+                $(this).find('.password-mask').addClass('password-hidden');
+                $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+            }
+            $(this).data('visible', !passwordVisible);
+        });
+    });
+</script>

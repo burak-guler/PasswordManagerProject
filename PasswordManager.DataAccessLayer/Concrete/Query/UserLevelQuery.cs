@@ -10,9 +10,12 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
     {
         public static readonly string ADD = @"
                                                 INSERT INTO dbo.Tbl_UserLevel (CreationDate, IsActive, CompanyID) 
-                                                VALUES (@CreationDate,@IsActive,@CompanyID);
+                                                OUTPUT INSERTED.LevelID
+                                                VALUES (@CreationDate,@IsActive,@CompanyID);";
+
+        public static readonly string LANG_ADD = @"
                                                 INSERT INTO dbo.Lang_UserLevel (LevelID, LangID, LevelName)
-                                                VALUES (@@identity, @LangID, @LevelName);";
+                                                VALUES (@LevelID, @LangID, @LevelName);";
 
         public static readonly string GET = @"
                                                 select lang.LevelName,lang.LangID,tbl.IsActive,tbl.LevelID, tbl.CompanyID,                              tbl.CreationDate 
@@ -39,7 +42,10 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
 
         public static readonly string UPDATE = @"
                                                 update Tbl_UserLevel set CreationDate=@CreationDate , CompanyID=@CompanyID 
-                                                where LevelID=@LevelID 
+                                                OUTPUT INSERTED.LevelID
+                                                where LevelID=@LevelID";
+
+        public static readonly string LANG_UPDATE = @"
                                                 update Lang_UserLevel set LevelName=@LevelName 
                                                 where LevelID=@LevelID and LangID=@LangID";
     }

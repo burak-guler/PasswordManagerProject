@@ -5,6 +5,7 @@ using PasswordManager.DataAccessLayer.Abstract;
 using PasswordManager.DataAccessLayer.Concrete.Query;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -19,10 +20,10 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
         {
         }
 
-        public async Task Add(Category value)
+        public async Task<int> Add(Category value, SqlConnection conn)
         {
-            var connection = await ConnectionDb();
-            await connection.ExecuteAsync(CategoryQuery.ADD, value);
+            //var connection = await ConnectionDb();
+            return await conn.QuerySingleAsync<int>(CategoryQuery.ADD, value);
         }
 
         public async Task<Category> Get(int id)
@@ -38,6 +39,18 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
                 .ToList();
         }
 
+        public async Task LangAdd(Category value, SqlConnection conn)
+        {
+            //var connection = await ConnectionDb();
+            await conn.ExecuteAsync(CategoryQuery.LANG_ADD,value);
+        }
+
+        public async Task LangUpdate(Category value, SqlConnection conn)
+        {
+            //var connection = await ConnectionDb();
+            await conn.ExecuteAsync(CategoryQuery.LANG_UPDATE, new { CategoryName = value.CategoryName, CategoryID = value.CategoryID, LangID=value.LangID });
+        }
+
         public async Task<List<Category>> List()
         {
             var connection = await ConnectionDb();
@@ -51,10 +64,10 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
             await connection.ExecuteAsync(CategoryQuery.REMOVE, new { id });
         }
 
-        public async Task Update(Category value)
+        public async Task<int> Update(Category value, SqlConnection conn)
         {
-            var connection = await ConnectionDb();
-            await connection.ExecuteAsync(CategoryQuery.UPDATE, value);
+            //var connection = await ConnectionDb();
+            return await conn.QuerySingleAsync<int>(CategoryQuery.UPDATE, value);
         }
     }
 }

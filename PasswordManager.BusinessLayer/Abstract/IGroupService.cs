@@ -3,11 +3,14 @@ using PasswordManager.Core.Models;
 
 namespace PasswordManager.BusinessLayer.Abstract
 {
-    public interface IGroupService : IBaseService<Group>
+    public interface IGroupService : IBaseService<GroupViewModels>
     {
-        Task AddUserToGroup(int userID, int groupID);
-        Task AddGroupToRole(int groupID, int roleID);
-
-        Task<List<Group>> GetAllByCompanyId(int companyId);
+        Task AddUserToGroup(int userID, int groupID, int currentID);
+        Task RemoveUserToGroup(int userGroupID, int currentID);
+        Task AddGroupToRole(int groupID, int roleID, int currentID);
+        Task RemoveGroupToRole(int groupID, int roleID, int currentID);        
+        Task<List<GroupViewModels>> GetAllByCompanyId(int companyId);
+        Task<List<GroupViewModels>> UserGroup_BYUserID(int userID);
+        Task<List<UserViewModels>> UserGroup_BYGroupID(int groupID);
     }
 }

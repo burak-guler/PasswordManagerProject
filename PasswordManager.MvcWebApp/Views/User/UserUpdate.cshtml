@@ -1,0 +1,44 @@
+﻿@model PasswordManager.Core.Models.UserViewModels
+@{
+    ViewData["Title"] = "UserUpdate";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Kullanıcı Güncelleme</h6>
+                <form method="post" action="UserUpdate">
+                    <input type="text" class="form-control" asp-for="UserID" hidden id="exampleInputEmail1"
+                           aria-describedby="emailHelp">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Kullanıcı Adı</label>
+                        <input type="text" class="form-control" asp-for="UserName" id="exampleInputEmail1"
+                               aria-describedby="emailHelp" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Şifre</label>
+                        <input type="text" class="form-control" id="exampleInputPassword1" asp-for="Password" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Şifre Level</label>
+                        <select class="form-select mb-3" asp-for="LevelID" aria-label="Default select example">
+                            <option selected>Seçiniz..</option>
+                            @foreach (var item in ViewBag.Level)
+                            {
+                                <option value="@item.LevelID">@item.LevelName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Kullanıcı Oluşturulma Tarihi</label>
+                        <input type="text" class="form-control" id="exampleInputPassword1" asp-for="CreationDate" >
+                    </div>
+                    <button style="float:right; margin:10px;" type="submit" class="btn btn-warning">Güncelle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.BusinessLayer.Abstract
 {
-    public interface IUserService : IBaseService<User>
+    public interface IUserService : IBaseService<UserViewModels>
     {
-        Task<User> Login(User user);
+        Task<UserViewModels> Login(UserViewModels user);
         Task AddUserToRole(int userID, int roleID);
-        Task<List<User>> GetAllByCompanyId(int companyId);
+        Task RemoveUserToRole(int userRoleID);
+        Task<List<UserViewModels>> GetAllByCompanyId(int companyId);
+        Task<List<UserRoleViewModels>> GetAllUserRoleByUserID(int userID);
     }
 }

@@ -1,13 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PasswordManager.BusinessLayer.Abstract;
 using PasswordManager.BusinessLayer.Models;
 using PasswordManager.Core.Entity;
+using PasswordManager.Core.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using PasswordManager.Core.Models;
 
 namespace PasswordManager.BusinessLayer.Concrete
 {
@@ -21,7 +20,7 @@ namespace PasswordManager.BusinessLayer.Concrete
             _jwtSettings= jwtSettings.Value;    
         }
 
-        public LoginResponse GenerateToken(User user)
+        public LoginResponse GenerateToken(UserViewModels user)
         {
             if (string.IsNullOrEmpty(_jwtSettings.Secret) || string.IsNullOrEmpty(_jwtSettings.ValidIssuer) || string.IsNullOrEmpty(_jwtSettings.ValidAudience) || string.IsNullOrEmpty(_jwtSettings.Expires))
             {
@@ -52,7 +51,14 @@ namespace PasswordManager.BusinessLayer.Concrete
             {
                 AuthToken = new JwtSecurityTokenHandler().WriteToken(jwt),
                 AccessTokenExpireDate = dateTimeNow.AddDays(Convert.ToDouble(_jwtSettings.Expires)),
-                AuthenticateResult = true
+                AuthenticateResult = true,
+                UserID = user.UserID,
+                UserName = user.UserName,
+                Password = user.Password,
+                CompanyID = user.CompanyID,
+                LevelID = user.LevelID,
+                LevelName = user.LevelName,
+                CompanyName = user.CompanyName,
             };
         }
     }

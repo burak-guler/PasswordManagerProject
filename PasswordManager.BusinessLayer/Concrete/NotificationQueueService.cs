@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.BusinessLayer.Concrete
 {
-    public class NotificationQueueService : INotificationQueueService
+    public class NotificationQueueService : BaseService<NotificationQueue>, INotificationQueueService
     {
         private INotificationQueueRepository _notificationQueueRepository;
 

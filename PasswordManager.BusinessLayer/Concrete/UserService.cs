@@ -1,19 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using PasswordManager.BusinessLayer.Abstract;
-using PasswordManager.BusinessLayer.Encryption;
+﻿using PasswordManager.BusinessLayer.Abstract;
 using PasswordManager.Core.Entity;
 using PasswordManager.Core.Models;
 using PasswordManager.DataAccessLayer.Abstract;
-using PasswordManager.DataAccessLayer.Concrete.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.Design;
 
 namespace PasswordManager.BusinessLayer.Concrete
 {
-    public class UserService : IUserService
+    public class UserService : BaseService<UserViewModels>, IUserService
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserLevelRepository _userLevelRepository;
@@ -24,7 +17,7 @@ namespace PasswordManager.BusinessLayer.Concrete
             _userLevelRepository = userLevelRepository;
         }
 
-        public async Task Add(User entity, int? id)
+        public async Task Add(UserViewModels entity, int? id)
         {
             var user = await _userRepository.Get(id.Value);
             var level = await _userLevelRepository.Get(user.LevelID);
@@ -50,22 +43,27 @@ namespace PasswordManager.BusinessLayer.Concrete
             await _userRepository.AddUserToRole(userID, roleID);
         }
 
-        public async Task<List<User>> GetAll()
+        public async Task<List<UserViewModels>> GetAll()
         {
             return await _userRepository.List();
         }
 
-        public async Task<List<User>> GetAllByCompanyId(int companyId)
+        public async Task<List<UserViewModels>> GetAllByCompanyId(int companyId)
         {
             return await _userRepository.GetAllByCompanyId(companyId);
         }
 
-        public async Task<User> GetById(int id)
+        public async Task<List<UserRoleViewModels>> GetAllUserRoleByUserID(int userID)
+        {
+            return await _userRepository.GetAllUserRoleByUserID(userID);
+        }
+
+        public async Task<UserViewModels> GetById(int id)
         {
             return await _userRepository.Get(id);
         }
 
-        public async Task<User> Login(User user)
+        public async Task<UserViewModels> Login(UserViewModels user)
         {
            return await _userRepository.Login(user);
         }
@@ -73,11 +71,18 @@ namespace PasswordManager.BusinessLayer.Concrete
         public async Task Remove(int id)
         {
             await _userRepository.Remove(id);
+
         }
 
-        public async Task Update(User entity)
+        public async Task RemoveUserToRole(int userRoleID)
+        {
+            await _userRepository.RemoveUserToRole(userRoleID);
+        }
+
+        public async Task Update(UserViewModels entity)
         {
             await _userRepository.Update(entity);
+
         }
         
     }

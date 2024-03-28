@@ -10,10 +10,12 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
     {
         public static readonly string ADD = @"
                                                 INSERT INTO dbo.Tbl_Category (CompanyID, CreationDate, IsActive) 
-                                                VALUES (@CompanyID,@CreationDate,@IsActive);
+                                                OUTPUT INSERTED.CategoryID
+                                                VALUES (@CompanyID,@CreationDate,@IsActive);";
 
+        public static readonly string LANG_ADD = @"                                              
                                                 INSERT INTO dbo.Lang_Category (CategoryID, LangID, CategoryName)
-                                                VALUES (@@identity, @LangID, @CategoryName);";
+                                                VALUES (@CategoryID, @LangID, @CategoryName);";
 
         public static readonly string GET = @"
                                                 select tbl.CategoryID,lang.CategoryName,lang.LangID, tbl.CompanyID,                         tbl.CreationDate,tbl.IsActive 
@@ -29,7 +31,7 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
                                                 where tbl.IsActive=1";
 
         public static readonly string GET_LIST_COMPANYID = @"
-                                                select tbl.CategoryID,lang.CategoryName, tbl.CompanyID,                                    tbl.CreationDate,tbl.IsActive,lang.LangID 
+                                                select tbl.CategoryID,lang.CategoryName, tbl.CompanyID,                                                         tbl.CreationDate,tbl.IsActive,lang.LangID 
                                                 from Tbl_Category as tbl 
                                                 inner join Lang_Category as lang 
                                                 on tbl.CategoryID=lang.CategoryID 
@@ -39,9 +41,11 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
 
         public static readonly string UPDATE = @"
                                                 update Tbl_Category set CompanyID=@CompanyID , CreationDate=@CreationDate
-                                                where CategoryID=@CategoryID 
+                                                OUTPUT INSERTED.CategoryID
+                                                where CategoryID=@CategoryID";
 
-                                                update Lang_Category set CategoryName=@CategoryName
-                                                where CategoryID=@CategoryID and LangID=@LangID";
-        }
+        public static readonly string LANG_UPDATE = @"
+                                                    update Lang_Category set CategoryName=@CategoryName
+                                                    where CategoryID=@CategoryID and LangID=@LangID";
+    }
 }

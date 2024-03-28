@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 using PasswordManager.BusinessLayer.Abstract;
 using PasswordManager.BusinessLayer.Concrete;
 using PasswordManager.Core.Entity;
+using PasswordManager.Core.Models;
 
 namespace WebApi.Controllers
 {
@@ -14,17 +15,19 @@ namespace WebApi.Controllers
         private IUserService _userService;
         private ITokenService _tokenService;
         private ILog _logger;
+        private IUserLevelService _userLevelService;    
 
-        public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor,ITokenService tokenService ,ILog log,IMemoryCache memoryCache) : base(httpContextAccessor,memoryCache)
+        public UserController(IUserService userService, IHttpContextAccessor httpContextAccessor,ITokenService tokenService ,ILog log,IMemoryCache memoryCache,IUserLevelService userLevelService) : base(httpContextAccessor,memoryCache)
         {
             _userService = userService;
             _tokenService = tokenService;
             _logger = log;
+            _userLevelService = userLevelService;
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] User request)
+        public async Task<IActionResult> Login([FromBody] UserViewModels request)
         {
             try
             {
@@ -54,8 +57,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
             try
-            {
-                var tokenUser = CurrentUser;
+            {        
                 var values = await _userService.GetAll();
                 return Ok(values);
             }
@@ -73,6 +75,17 @@ namespace WebApi.Controllers
         {
             try
             {
+                var user = await _userService.GetById(CurrentUser.UserID);
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                }
+
+                var level = await _userLevelService.GetById(user.LevelID);
+                if (level.LevelName != "Admin")
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                }
 
                 var values = await _userService.GetAllByCompanyId(companyId);
                 return Ok(values);
@@ -90,6 +103,18 @@ namespace WebApi.Controllers
         {
             try
             {
+                var user = await _userService.GetById(CurrentUser.UserID);
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                }
+
+                //var level = await _userLevelService.GetById(user.LevelID);
+                //if (level.LevelName != "Admin")
+                //{
+                //    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                //}
+
                 var value = await _userService.GetById(id);
                 if (value == null)
                 {
@@ -106,13 +131,11 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUser(User user)
+        public async Task<IActionResult> AddUser(UserViewModels user)
         {
             try
-            {
-                var userCurrent = await _userService.GetById(CurrentUser.UserID);
-                int levelID = userCurrent.LevelID;
-                await _userService.Add(user, levelID);
+            {                
+                await _userService.Add(user, CurrentUser.UserID);
                 return Ok();
             }
             catch (Exception ex)
@@ -124,10 +147,22 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateUser(User user)
+        public async Task<IActionResult> UpdateUser(UserViewModels user)
         {
             try
             {
+                var userValue = await _userService.GetById(CurrentUser.UserID);
+                if (userValue == null)
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                }
+
+                var level = await _userLevelService.GetById(userValue.LevelID);
+                if (level.LevelName != "Admin")
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                }
+
                 await _userService.Update(user);
                 return Ok();
             }
@@ -144,6 +179,18 @@ namespace WebApi.Controllers
         {
             try
             {
+                var user = await _userService.GetById(CurrentUser.UserID);
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                }
+
+                var level = await _userLevelService.GetById(user.LevelID);
+                if (level.LevelName != "Admin")
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                }
+
                 await _userService.Remove(id);
                 return Ok();
             }
@@ -162,6 +209,19 @@ namespace WebApi.Controllers
             {
                 if (roleID > 0 && userID > 0)
                 {
+                    var user = await _userService.GetById(CurrentUser.UserID);
+                    if (user == null)
+                    {
+                        throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                    }
+
+                    var level = await _userLevelService.GetById(user.LevelID);
+                    if (level.LevelName != "Admin")
+                    {
+                        throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                    }
+
+
                     await _userService.AddUserToRole(userID, roleID);
                     return Ok();
                 }
@@ -172,6 +232,66 @@ namespace WebApi.Controllers
 
                 _logger.Error("Hata-AddUserToRole" + ex.ToString());
                 return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllUserRoleByUserID(int userID)
+        {
+            try
+            {
+                var user = await _userService.GetById(CurrentUser.UserID);
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                }
+
+                var level = await _userLevelService.GetById(user.LevelID);
+                if (level.LevelName != "Admin")
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                }
+
+                var value = await _userService.GetAllUserRoleByUserID(userID);
+                if (value == null)
+                {
+                    return NotFound();
+                }
+                return Ok(value);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("HATA-GetUser:" + ex.ToString());
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+
+        }
+
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveUserToRole(int userRoleID)
+        {
+            try
+            {
+                var user = await _userService.GetById(CurrentUser.UserID);
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                }
+
+                var level = await _userLevelService.GetById(user.LevelID);
+                if (level.LevelName != "Admin")
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                }
+
+                await _userService.RemoveUserToRole(userRoleID);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("HATA-RemoveUserToRole:" + ex.ToString());
+                return StatusCode(500, "hata: " + ex.Message);
             }
         }
     }

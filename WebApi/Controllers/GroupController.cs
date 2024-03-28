@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 using PasswordManager.BusinessLayer.Abstract;
 using PasswordManager.BusinessLayer.Concrete;
 using PasswordManager.Core.Entity;
+using PasswordManager.Core.Models;
 
 namespace WebApi.Controllers
 {
@@ -13,10 +14,14 @@ namespace WebApi.Controllers
     {
         private IGroupService _groupService;
         private readonly ILog _logger;
-        public GroupController(IHttpContextAccessor contextAccessor, IMemoryCache memoryCache,IGroupService groupService, ILog log ) : base(contextAccessor, memoryCache)
+        private IUserService _userService;
+        private IUserLevelService _userLevelService;
+        public GroupController(IHttpContextAccessor contextAccessor, IMemoryCache memoryCache,IGroupService groupService, ILog log, IUserService userService,IUserLevelService userLevelService) : base(contextAccessor, memoryCache)
         {
             _logger = log;  
-            _groupService = groupService;   
+            _groupService = groupService;
+            _userService = userService;
+            _userLevelService = userLevelService;
         }
 
         [HttpGet]
@@ -41,6 +46,18 @@ namespace WebApi.Controllers
         {
             try
             {
+                var user = await _userService.GetById(CurrentUser.UserID);
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                }
+
+                var level = await _userLevelService.GetById(user.LevelID);
+                if (level.LevelName != "Admin")
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                }
+
 
                 var values = await _groupService.GetAllByCompanyId(companyId);
                 return Ok(values);
@@ -58,6 +75,13 @@ namespace WebApi.Controllers
         {
             try
             {
+                var user = await _userService.GetById(CurrentUser.UserID);
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                }
+                
+
                 var group = await _groupService.GetById(id);
                 if (group == null)
                 {
@@ -76,11 +100,23 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddGroup(Group group)
+        public async Task<IActionResult> AddGroup(GroupViewModels group)
         {
             try
             {
-                await _groupService.Add(group);
+                var user = await _userService.GetById(CurrentUser.UserID);
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                }
+
+                var level = await _userLevelService.GetById(user.LevelID);
+                if (level.LevelName != "Admin")
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                }
+
+                await _groupService.Add(group, CurrentUser.UserID);
                 return Ok();
             }
             catch (Exception ex)
@@ -92,10 +128,22 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateGroup(Group group)
+        public async Task<IActionResult> UpdateGroup(GroupViewModels group)
         {
             try
             {
+                var user = await _userService.GetById(CurrentUser.UserID);
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                }
+
+                var level = await _userLevelService.GetById(user.LevelID);
+                if (level.LevelName != "Admin")
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                }
+
                 await _groupService.Update(group);
                 return Ok();
             }
@@ -113,6 +161,18 @@ namespace WebApi.Controllers
         {
             try
             {
+                var user = await _userService.GetById(CurrentUser.UserID);
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                }
+
+                var level = await _userLevelService.GetById(user.LevelID);
+                if (level.LevelName != "Admin")
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                }
+
                 await _groupService.Remove(id);
                 return Ok();
             }
@@ -125,6 +185,54 @@ namespace WebApi.Controllers
 
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> UserGroup_BYuserID(int userID)
+        {
+            try
+            {               
+
+                var group = await _groupService.UserGroup_BYUserID(userID);
+                if (group == null)
+                {
+                    return NotFound();
+                }
+                return Ok(group);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.Error("HATA-GetGroup:" + ex.ToString());
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+
+
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> UserGroup_BYGroupID(int groupID)
+        {
+            try
+            {
+
+                var groupUser = await _groupService.UserGroup_BYGroupID(groupID);
+                if (groupUser == null)
+                {
+                    return NotFound();
+                }
+                return Ok(groupUser);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.Error("HATA-GetGroup:" + ex.ToString());
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+
+
+        }
+
         //LKP_GroupRole Add 
         [HttpPost]
         public async Task <IActionResult> AddRoleToGroup(int groupID, int roleID) 
@@ -133,7 +241,19 @@ namespace WebApi.Controllers
             {
                 if (groupID > 0 && roleID > 0 ) 
                 {
-                    await _groupService.AddGroupToRole(groupID, roleID);    
+                    var user = await _userService.GetById(CurrentUser.UserID);
+                    if (user == null)
+                    {
+                        throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                    }
+
+                    var level = await _userLevelService.GetById(user.LevelID);
+                    if (level.LevelName != "Admin")
+                    {
+                        throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                    }
+
+                    await _groupService.AddGroupToRole(groupID, roleID,CurrentUser.UserID);    
                     return Ok();
                 }
                 return NotFound();
@@ -146,6 +266,36 @@ namespace WebApi.Controllers
             }           
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> RemoveGroupToRole(int groupID, int roleID)
+        {
+            try
+            {
+                var user = await _userService.GetById(CurrentUser.UserID);
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                }
+
+                var level = await _userLevelService.GetById(user.LevelID);
+                if (level.LevelName != "Admin")
+                {
+                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                }
+
+
+                await _groupService.RemoveGroupToRole(groupID,roleID,CurrentUser.UserID);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                _logger.Error("HATA-RemoveGroupToRole:" + ex.ToString());
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+
+        }
+
         //LKP_UserGroup Add
         [HttpPost]
         public async Task<IActionResult> AddUserToGroup(int userID, int groupID)
@@ -154,7 +304,19 @@ namespace WebApi.Controllers
             {
                 if (groupID > 0 && userID > 0)
                 {
-                    await _groupService.AddUserToGroup(userID, groupID);
+                    var user = await _userService.GetById(CurrentUser.UserID);
+                    if (user == null)
+                    {
+                        throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                    }
+
+                    var level = await _userLevelService.GetById(user.LevelID);
+                    if (level.LevelName != "Admin")
+                    {
+                        throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                    }
+
+                    await _groupService.AddUserToGroup(userID, groupID, CurrentUser.UserID);
                     return Ok();
                 }
                 return NotFound();
@@ -165,6 +327,24 @@ namespace WebApi.Controllers
                 _logger.Error("Hata-AddUserToGroup" + ex.ToString());
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveUserToGroup(int userGroupID)
+        {
+            try
+            {
+
+                await _groupService.RemoveUserToGroup(userGroupID, CurrentUser.UserID);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                _logger.Error("HATA-RemoveUserToGroup:" + ex.ToString());
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+
         }
     }
 }

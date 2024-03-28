@@ -5,6 +5,6 @@ namespace PasswordManager.BusinessLayer.Abstract
 {
     public interface ITokenService
     {
-       LoginResponse GenerateToken(User user);
+       LoginResponse GenerateToken(UserViewModels user);
     }
 }

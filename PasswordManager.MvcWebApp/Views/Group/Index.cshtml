@@ -1,0 +1,45 @@
+﻿@using PasswordManager.Core.Models
+@model List<GroupViewModels>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Gruplarım</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Oluşturulma Tarihi</th>
+                                <th scope="col">Group Adı</th>
+                                <th scope="col">Açıklama</th>                                
+                                <th scope="col">İşlemler</th>                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">#</th>
+                                    <td>@item.CreationDate</td>
+                                    <td>@item.GroupName</td>
+                                    <td>@item.GroupDescription</td>                                                         
+                                    <td>
+                                        <a href="/Group/GroupDetail/@item.GroupID" class="btn btn-outline-dark m-2">Detay</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                @*     <a href="/Password/PasswordAdd/" class="btn btn-primary rounded-pill m-2">Şifre Ekle</a> *@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

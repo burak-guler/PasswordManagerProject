@@ -6,6 +6,7 @@ using PasswordManager.DataAccessLayer.Abstract;
 using PasswordManager.DataAccessLayer.Concrete.Query;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -13,28 +14,28 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.DataAccessLayer.Concrete.Repositories
 {
-    public class PasswordRepository : GenericRepository<Password>, IPasswordRepository
+    public class PasswordRepository : GenericRepository<PasswordViewModels>, IPasswordRepository
     {
         public PasswordRepository(IConfiguration configuration) : base(configuration)
         {
         }
 
-        public async Task Add(Password value)
+        public async Task Add(PasswordViewModels value)
         {
             var connection = await ConnectionDb();            
             await connection.ExecuteAsync(PasswordQuery.ADD,value);
         }
 
-        public async Task< Password> Get(int id)
+        public async Task<PasswordViewModels> Get(int id)
         {        
             var connection = await ConnectionDb();
-            return await connection.QueryFirstAsync<Password>(PasswordQuery.GET,new {id});
+            return await connection.QueryFirstAsync<PasswordViewModels>(PasswordQuery.GET,new { PasswordID = id });
         }
 
-        public async Task< List<Password>> List()
+        public async Task< List<PasswordViewModels>> List()
         {            
             var connection = await ConnectionDb();
-            return (await connection.QueryAsync<Password>(PasswordQuery.GET_LIST))?
+            return (await connection.QueryAsync<PasswordViewModels>(PasswordQuery.GET_LIST))?
                 .ToList();
         }
 
@@ -44,7 +45,7 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
             await connection.ExecuteAsync(PasswordQuery.REMOVE, new {id});
         }
 
-        public async Task Update(Password value)
+        public async Task Update(PasswordViewModels value)
         {            
             var connection = await ConnectionDb();
             await connection.ExecuteAsync(PasswordQuery.UPDATE,value);
@@ -56,10 +57,29 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
             await connection.ExecuteAsync(PasswordQuery.PasswordAccesADD, new {PasswordID = passwordID, UserID = userID, RoleID = roleID});
         }
 
-        public async Task<List<Password>> GetAllByCompanyId(int companyId)
+        public async Task<List<PasswordViewModels>> GetAllByCompanyId(int companyId)
         {
             var connection = await ConnectionDb();
-            return (await connection.QueryAsync<Password>(PasswordQuery.GET_LIST_COMPANYID, new { companyId }))?
+            return (await connection.QueryAsync<PasswordViewModels>(PasswordQuery.GET_LIST_COMPANYID, new { companyId }))?
+                .ToList();
+        }
+
+        public async Task<PasswordViewModels> PASSWORDROLE_CHECK(int passwordID, int userID, int roleID)
+        {
+            var connection = await ConnectionDb();
+            return await connection.QueryFirstAsync<PasswordViewModels>(PasswordQuery.PASSWORDROLE_CHECK, new { PasswordID= passwordID , UserID=userID , RoleID=roleID });
+        }
+
+        public async Task RemoveUserToPasswordAcces(int passwordID, int userID, int roleID)
+        {
+            var connection = await ConnectionDb();
+            await connection.ExecuteAsync(PasswordQuery.PasswordAccesRemove, new { PasswordID = passwordID, UserID = userID, RoleID = roleID });
+        }
+
+        public async Task<List<PasswordViewModels>> GetAllByUserId(int userID)
+        {
+            var connection = await ConnectionDb();
+            return (await connection.QueryAsync<PasswordViewModels>(PasswordQuery.GET_LIST_USERID, new { userID }))?
                 .ToList();
         }
     }

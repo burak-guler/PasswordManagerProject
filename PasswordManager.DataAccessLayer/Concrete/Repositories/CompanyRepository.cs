@@ -5,6 +5,7 @@ using PasswordManager.DataAccessLayer.Abstract;
 using PasswordManager.DataAccessLayer.Concrete.Query;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,23 +14,17 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
 {
     public class CompanyRepository : GenericRepository<Company>, ICompanyRepository
     {
-        public CompanyRepository(IConfiguration configuration) : base(configuration)
+        private IUserLevelRepository _userLevelRepository;   
+        public CompanyRepository(IConfiguration configuration, IUserLevelRepository userLevelRepository) : base(configuration)
         {
+            _userLevelRepository = userLevelRepository;
         }
 
-        public async Task Add(Company value)
+        public async Task<int> Add(Company value, SqlConnection conn)
         {
-            var connection = await ConnectionDb();
-
-            UserLevel level = new UserLevel()
-            {
-                CreationDate = DateTime.Now,
-                IsActive = true,
-                LangID=1,
-                LevelName="Admin"
-            };
-
-            await connection.ExecuteAsync(CompanyQuery.ADD, new { CompanyName = value.CompanyName, IsActive = value.IsActive, CreationDate = level.CreationDate, LevelName = level.LevelName, LangID = level.LangID});
+            //var connection = await ConnectionDb();
+            var companyId = await conn.QuerySingleAsync<int>(CompanyQuery.ADD, value);   
+            return companyId;
         }
 
         public async Task<Company> Get(int id)

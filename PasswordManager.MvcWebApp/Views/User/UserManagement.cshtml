@@ -1,0 +1,51 @@
+﻿@using PasswordManager.Core.Models
+@model List<UserViewModels>
+@{
+    ViewData["Title"] = "UserManagement";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">@ViewBag.companyName Kullanıcıları</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Katılma Tarihi</th>
+                                <th scope="col">Kullanıcı Adı</th>
+                                <th scope="col">Level Düzeyi</th>                  
+                                <th scope="col" style="text-align:center;">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">#</th>
+                                    <td>@item.CreationDate</td>
+                                    <td>@item.UserName</td>
+                                    <td>@item.LevelName</td>
+                                    <td style="text-align:center;">
+                                        <a href="/User/UserUpdate/@item.UserID" class="btn btn-warning m-2 update-btn">Güncelle</a>
+                                        <a href="/User/UserDetail/@item.UserID" class="btn btn-info m-2 role-add-btn">Detay & İşlem</a>
+                                        <a href="/User/UserRemove/@item.UserID" class="btn btn-danger m-2">Sil</a>
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <a href="/User/UserAdd/" class="btn btn-primary m-2 update-btn">Kullanıcı Ekle</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

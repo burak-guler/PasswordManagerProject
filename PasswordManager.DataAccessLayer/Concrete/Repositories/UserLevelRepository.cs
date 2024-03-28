@@ -5,6 +5,7 @@ using PasswordManager.DataAccessLayer.Abstract;
 using PasswordManager.DataAccessLayer.Concrete.Query;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,11 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
             await connection.ExecuteAsync(UserLevelQuery.ADD, value);
         }
 
+        public async Task<int> CompanyLevel_Add(UserLevel value, SqlConnection conn)
+        {
+            return await conn.QuerySingleAsync<int>(UserLevelQuery.ADD, value);
+        }
+
         public async Task<UserLevel> Get(int id)
         {
             var connection = await ConnectionDb();
@@ -34,6 +40,16 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
             var connection = await ConnectionDb();
             return (await connection.QueryAsync<UserLevel>(UserLevelQuery.GET_LIST_COMPANYID, new { companyId }))?
                 .ToList();
+        }
+
+        public async Task LangAdd(UserLevel value, SqlConnection conn)
+        {
+            await conn.ExecuteAsync(UserLevelQuery.LANG_ADD, value);
+        }
+
+        public async Task LangUpdate(UserLevel value, SqlConnection conn)
+        {
+            await conn.ExecuteAsync(UserLevelQuery.LANG_UPDATE, value);
         }
 
         public async Task<List<UserLevel>> List()
@@ -49,10 +65,10 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
             await connection.ExecuteAsync(UserLevelQuery.REMOVE, new { id });
         }
 
-        public async Task Update(UserLevel value)
+        public async Task<int> Update(UserLevel value, SqlConnection conn)
         {
-            var connection = await ConnectionDb();
-            await connection.ExecuteAsync(UserLevelQuery.UPDATE, value);
+            //var connection = await ConnectionDb();
+            return await conn.QuerySingleAsync<int>(UserLevelQuery.UPDATE, value);
         }
     }
 }
