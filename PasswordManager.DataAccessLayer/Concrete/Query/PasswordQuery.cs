@@ -74,5 +74,27 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
                                                              inner join dbo.Lkp_PasswordAcces lkp 
                                                              ON  tbl.PasswordID=lkp.PasswordID
                                                              where lkp.PasswordID=@PasswordID and lkp.UserID=@UserID and                                                     lkp.RoleID=@RoleID";
+
+        public static readonly string PasswordAccesGetList = @"
+                                                            SELECT 
+                                                                p.PasswordID,
+                                                                pa.UserID,
+                                                                p.CategoryID,
+                                                                p.PasswordValue,
+                                                                p.LevelID,
+                                                                p.CompanyID,
+                                                                p.IsActive,
+                                                                lv.LevelName,
+                                                                ca.CategoryName,
+                                                                c.CompanyName,
+                                                                pa.RoleID
+                                                            FROM Lkp_PasswordAcces pa
+                                                            INNER JOIN Tbl_Users u ON pa.UserID = u.UserID
+                                                            INNER JOIN Tbl_Password p ON p.PasswordID = pa.PasswordID
+                                                            INNER JOIN Lang_UserLevel lv ON lv.LevelID = p.LevelID
+                                                            INNER JOIN Lang_Category ca ON ca.CategoryID = p.CategoryID
+                                                            INNER JOIN Tbl_Company c ON c.CompanyID = p.CompanyID
+                                                            WHERE u.UserID = @UserID and pa.RoleID= @RoleID;";
+
     }
 }

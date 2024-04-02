@@ -17,5 +17,6 @@ namespace PasswordManager.BusinessLayer.Abstract
         Task<PasswordViewModels> GetById(int id, int currentID);
         Task Remove(int id, int currentID);
         Task Update(PasswordViewModels entity, int currentID);
+        Task<List<PasswordViewModels>> PasswordAccesGetList(int userID, int roleID);
     }
 }

@@ -5,11 +5,11 @@
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
 
-<head>
-    <!-- Diğer başlık etiketleri -->
-    <!-- jQuery CDN -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <style>
     .password-hidden {
         display: none;
@@ -69,6 +69,7 @@
                                     <td>
                                         <a href="/Password/PasswordRemove/@item.PasswordID" class="btn btn-danger rounded-pill m-2">Sil</a>
                                         <a href="/Password/PasswordUpdate/@item.PasswordID" class="btn btn-warning rounded-pill m-2">Güncelle</a>
+                                        <a href="/Password/PasswordRemove/@item.PasswordID" class="btn btn-success m-2 role-add-btn" data-toggle="modal" data-target="#roleAddModal" data-userid="@item.PasswordID">Yetkilendir</a>
                                     </td>
                                 </tr>
                             } 
@@ -78,12 +79,106 @@
                 </div>
             </div>
         </div>
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Yetki Verilmiş Şifrelerim</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Şifre Kategori</th>
+                                <th scope="col">Şifre Level</th>
+                                <th scope="col">Şirket</th>
+                                <th scope="col">Şifre</th>
+                                <th scope="col"></th>
+                       
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in ViewBag.PasswordAcces)
+                            {
+                                <tr>
+                                    <th scope="row">#</th>
+                                    <td>@item.CategoryName</td>
+                                    <td>@item.LevelName</td>
+                                    <td>@item.CompanyName</td>
+                                    <td>
+                                        <span class="password-toggle" data-visible="false">
+                                            <i class="fa fa-eye" style="cursor: pointer;"></i>
+                                            <span class="password-value password-hidden">@item.PasswordValue</span>
+                                            <span class="password-mask">********</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="/Password/PasswordAuthorizationRemove/?passwordID=@item.PasswordID&userID=@item.UserID&roleID=@item.RoleID" class="btn btn-danger rounded-pill m-2">Kaldır</a>
+                                    </td>
+                                   
+                                </tr>
+                            }
+                        </tbody>
+                    </table>                 
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 
 
+<!-- Rol Ekleme Modalı -->
+<div class="modal fade" id="roleAddModal" tabindex="-1" role="dialog" aria-labelledby="roleAddModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Kullanıcı Şifre Yetkilendirme</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="PasswordAuthorizationAdd" method="post">
+                    <input type="hidden" id="roleAddUserId" name="passwordID" value="" />
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Kullanıcı</label>
+                        <select asp-items="@ViewBag.Users" name="userID" class="form-control">
+                            <option value="">Seçiniz</option>
+                        </select>
+
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Rol</label>
+                        <select asp-items="@ViewBag.Roles" name="roleID" class="form-control">
+                            <option value="">Seçiniz</option>
+                        </select>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary m-2 update-btn">Rol Ekle</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <!-- Güncelleme işlemini gerçekleştiren buton -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
+
+    $(document).ready(function () {
+       
+
+        $(".role-add-btn").click(function () {
+            var userId = $(this).data('userid');
+            $("#roleAddUserId").val(userId); // Rol ekleme modalında kullanıcı ID'sini saklayan bir input alanı ekleyin
+        });
+
+       
+    });
+
+
     $(document).ready(function () {
         $('.password-toggle').click(function () {
             var passwordVisible = $(this).data('visible');

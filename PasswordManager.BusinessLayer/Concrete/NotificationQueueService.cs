@@ -38,6 +38,16 @@ namespace PasswordManager.BusinessLayer.Concrete
            return await _notificationQueueRepository.Get(id);
         }
 
+        public async Task<List<NotificationQueue>> Notification_Get_List_UserID(int userID)
+        {
+            return await _notificationQueueRepository.Notification_Get_List_UserID(userID);
+        }
+
+        public async Task Notification_Update( DateTime dateTime)
+        {
+            await _notificationQueueRepository.Notification_Update(dateTime); 
+        }
+
         public async Task Remove(int id)
         {
             await _notificationQueueRepository.Remove(id);  

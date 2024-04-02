@@ -12,6 +12,7 @@ namespace PasswordManager.Core.Models
         public int UserID { get; set; }
         public string? UserName { get; set; }
         public int CategoryID { get; set; }
+        public int? RoleID { get; set; }
         public string? CategoryName { get; set; }
         public string? PasswordValue { get; set; }
         public string? LevelName { get; set; }

@@ -15,6 +15,7 @@ namespace PasswordManager.DataAccessLayer.Abstract
         Task<List<PasswordViewModels>> GetAllByCompanyId(int companyId);
         Task<List<PasswordViewModels>> GetAllByUserId(int userID);
         Task<PasswordViewModels> PASSWORDROLE_CHECK(int passwordID, int userID, int roleID);
+        Task<List<PasswordViewModels>> PasswordAccesGetList(int userID, int roleID);
 
 
 

@@ -1,15 +1,12 @@
 ﻿using log4net;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using PasswordManager.BusinessLayer.Abstract;
-using PasswordManager.BusinessLayer.Concrete;
-using PasswordManager.Core.Entity;
 using PasswordManager.Core.Models;
 
 namespace WebApi.Controllers
 {
-    
+
     public class PasswordController : BaseController
     {
         private IPasswordService _passwordService;
@@ -191,6 +188,28 @@ namespace WebApi.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> PasswordAccesGetList(int userID, int roleID)
+        {
+            try
+            {
+                var value = await _passwordService.PasswordAccesGetList(userID,roleID);
+                if (value == null)
+                {
+                    return NotFound();
+                }
+                return Ok(value);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("HATA-GetPassword:" + ex.ToString());
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+        }
+
+
         //LKP_PasswordAcces remove
         [HttpDelete]
         public async Task<IActionResult> RemoveUserToPassword(int passwordID, int userID, int roleID)

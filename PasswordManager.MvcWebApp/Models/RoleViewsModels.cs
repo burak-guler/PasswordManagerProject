@@ -4,6 +4,7 @@
     {
         public int RoleID { get; set; }
         public int UserRoleID { get; set; }
+        public int GroupRoleID { get; set; }
         public string RoleName { get; set; }
     }
 }

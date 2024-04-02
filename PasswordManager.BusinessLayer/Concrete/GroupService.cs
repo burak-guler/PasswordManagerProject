@@ -70,6 +70,11 @@ namespace PasswordManager.BusinessLayer.Concrete
             return await _groupRepository.GetAllByCompanyId(companyId);
         }
 
+        public async Task<List<GroupRoleViewModel>> GetAllGroupRoleByGrouID(int groupID)
+        {
+            return await _groupRepository.GetAllGroupRoleByGrouID(groupID);
+        }
+
         public async Task<GroupViewModels> GetById(int id)
         {          
 
@@ -83,11 +88,11 @@ namespace PasswordManager.BusinessLayer.Concrete
             await _groupRepository.Remove(id);
         }
 
-        public async Task RemoveGroupToRole(int groupID, int roleID, int currentID)
+        public async Task RemoveGroupToRole(int groupRoleID, int currentID)
         {
            
 
-            await _groupRepository.RemoveGroupToRole(groupID,roleID);
+            await _groupRepository.RemoveGroupToRole(groupRoleID);
         }
 
         public async Task RemoveUserToGroup(int userGroupID, int currentID)

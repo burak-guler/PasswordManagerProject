@@ -5,6 +5,7 @@ using PasswordManager.DataAccessLayer.Abstract;
 using PasswordManager.DataAccessLayer.Concrete.Query;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,6 +42,19 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
             var connection = await ConnectionDb();
             return (await connection.QueryAsync<NotificationQueue>(NotificationQueueQuery.GET_LIST))?
                 .ToList();
+        }
+
+        public async Task<List<NotificationQueue>> Notification_Get_List_UserID(int userID)
+        {
+            var connection = await ConnectionDb();
+            return (await connection.QueryAsync<NotificationQueue>(NotificationQueueQuery.NOTIFICATION_GET_LIST_USERID, new { UserID =userID }))?
+                .ToList();
+        }
+
+        public async Task Notification_Update(DateTime dateTime)
+        {
+            var connection = await ConnectionDb();
+            await connection.ExecuteAsync(NotificationQueueQuery.NOTIFICATION_UPDATE,new {SentDate = dateTime});
         }
 
         public async Task Remove(int id)

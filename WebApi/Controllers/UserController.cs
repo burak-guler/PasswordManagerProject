@@ -75,17 +75,17 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = await _userService.GetById(CurrentUser.UserID);
-                if (user == null)
-                {
-                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
-                }
+                //var user = await _userService.GetById(CurrentUser.UserID);
+                //if (user == null)
+                //{
+                //    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                //}
 
-                var level = await _userLevelService.GetById(user.LevelID);
-                if (level.LevelName != "Admin")
-                {
-                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
-                }
+                //var level = await _userLevelService.GetById(user.LevelID);
+                //if (level.LevelName != "Admin")
+                //{
+                //    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                //}
 
                 var values = await _userService.GetAllByCompanyId(companyId);
                 return Ok(values);

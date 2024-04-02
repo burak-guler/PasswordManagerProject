@@ -82,5 +82,12 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
             return (await connection.QueryAsync<PasswordViewModels>(PasswordQuery.GET_LIST_USERID, new { userID }))?
                 .ToList();
         }
+
+        public async Task<List<PasswordViewModels>> PasswordAccesGetList(int userID, int roleID)
+        {
+            var connection = await ConnectionDb();
+            return (await connection.QueryAsync<PasswordViewModels>(PasswordQuery.PasswordAccesGetList, new { UserID = userID , RoleID = roleID}))?
+                .ToList();
+        }
     }
 }

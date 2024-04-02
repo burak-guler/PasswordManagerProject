@@ -47,6 +47,13 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
                 .ToList();
         }
 
+        public async Task<List<GroupRoleViewModel>> GetAllGroupRoleByGrouID(int groupID)
+        {
+            var connection = await ConnectionDb();
+            return (await connection.QueryAsync<GroupRoleViewModel>(GroupQuery.UserRole_GetLıst_GroupID, new {GroupID=groupID}))?
+                .ToList();
+        }
+
         public async Task<int> LangAdd(GroupViewModels value, SqlConnection conn)
         {
             return await conn.QuerySingleAsync<int>(GroupQuery.LANG_ADD, value);
@@ -70,10 +77,10 @@ namespace PasswordManager.DataAccessLayer.Concrete.Repositories
             await connection.ExecuteAsync(GroupQuery.REMOVE, new { id });
         }
 
-        public async Task RemoveGroupToRole(int groupID, int roleID)
+        public async Task RemoveGroupToRole(int groupRoleID)
         {
             var connection = await ConnectionDb();
-            await connection.ExecuteAsync(GroupQuery.GroupRoleRemove, new { GroupID = groupID, RoleID = roleID });
+            await connection.ExecuteAsync(GroupQuery.GroupRoleRemove, new { GroupRoleID = groupRoleID  });
         }
 
         public async Task RemoveUserToGroup(int userGroupID)

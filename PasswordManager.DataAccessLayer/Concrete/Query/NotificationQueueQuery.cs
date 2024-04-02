@@ -27,5 +27,14 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
                                     UPDATE dbo.Tbl_NotificationQueue 
                                     SET IsSent = @IsSent,CompanyID = @CompanyID,CreationDate = @CreationDate,Title = @Title,Body = @Body,SentDate=@SentDate,UserID=@UserID
                                     WHERE NotificationQueueID =@NotificationQueueID";
+
+        public static readonly string NOTIFICATION_UPDATE = @"
+                                    UPDATE dbo.Tbl_NotificationQueue 
+                                    SET IsSent = 1,SentDate=@SentDate
+                                    WHERE IsSent =0";
+        
+        
+        public static readonly string NOTIFICATION_GET_LIST_USERID = @"
+                                    select * from Tbl_NotificationQueue where UserID=@UserID and IsSent=1";
     }
 }

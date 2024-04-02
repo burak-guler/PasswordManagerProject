@@ -1,12 +1,35 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using PasswordManager.MvcWebApp.Controllers;
+using System.Globalization;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+                    .AddViewLocalization();
+
+//Dil yapýsý için
+builder.Services.AddLocalization(options =>
+{
+    options.ResourcesPath = "Resources";
+});
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new("tr-TR");
+
+    CultureInfo[] cultures = new CultureInfo[]
+    {
+        new("tr-TR"),
+        new("en-US"),
+        new("fr-FR")
+    };
+
+    options.SupportedCultures = cultures;
+    options.SupportedUICultures = cultures;
+});
 
 //session yapýsý için
 builder.Services.AddHttpContextAccessor();
@@ -51,6 +74,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+//Dil yapýýsý için
+app.UseRequestLocalization();
 
 app.UseRouting();
 

@@ -1,18 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PasswordManager.Core.Entity;
 using PasswordManager.Core.Models;
+using PasswordManager.MvcWebApp.Languages;
 using PasswordManager.MvcWebApp.UrlStatic;
-using System.ComponentModel.Design;
-using System.Security.Permissions;
 using System.Text;
+using static PasswordManager.Core.Entity.Role;
 
 namespace PasswordManager.MvcWebApp.Controllers
 {
     public class PasswordController : BaseController
     {
-        public PasswordController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(httpClient, httpContextAccessor, configuration)
+        public PasswordController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IStringLocalizer<Lang> stringLocalizer) : base(httpClient, httpContextAccessor, configuration, stringLocalizer)
         {
         }
 
@@ -32,6 +34,53 @@ namespace PasswordManager.MvcWebApp.Controllers
                     ViewBag.check = TempData["Check"];
                     TempData.Remove("PasswordAdd"); // TempData'yi temizle
                 }
+
+
+                //ROLE Dropdown
+
+                List<SelectListItem> roleListItem = new List<SelectListItem>();
+
+                foreach (UserRole role in Role.AllRoles)
+                {
+                    roleListItem.Add(new SelectListItem
+                    {
+                        Text = role.ToString(),
+                        Value = ((int)role).ToString() // RoleID olarak enumun sayısal değerlerini kullanıyoruz
+                    });
+                }
+
+                ViewBag.Roles = roleListItem;
+
+                //ROLE Dropdown
+
+                //User Dropdown
+
+                var companyResponse = await _httpClient.GetAsync($"{ClientUrlHelper.UserService}GetAllBYCompanyIDUser/?companyId={CurrentUser.CompanyID}");
+                var companyJsonstring = await companyResponse.Content.ReadAsStringAsync();
+                var usersList = JsonConvert.DeserializeObject<List<UserViewModels>>(companyJsonstring);
+
+                List<SelectListItem> userListItem = new List<SelectListItem>();
+                foreach (var item in usersList)
+                {
+                    userListItem.Add(new SelectListItem
+                    {
+                        Text = item.UserName.ToString(),
+                        Value = item.UserID.ToString()
+                    });
+                }
+                ViewBag.Users = userListItem;
+
+                //User Dropdown
+
+                //passwordAcces de yetkilendirilmiş şifreler
+
+                var PasswordAccesResponse = await _httpClient.GetAsync($"{ClientUrlHelper.PasswordService}PasswordAccesGetList/?userID={CurrentUser.UserID}&roleID={(int)Role.UserRole.PasswordAcces}");
+                var PasswordAccesJsonstring = await PasswordAccesResponse.Content.ReadAsStringAsync();
+                var passwordAccesUsersList = JsonConvert.DeserializeObject<List<PasswordViewModels>>(PasswordAccesJsonstring);
+
+                
+                ViewBag.PasswordAcces = passwordAccesUsersList;  
+
                 return View(passwordList);
             }
             catch (Exception ex)
@@ -39,6 +88,56 @@ namespace PasswordManager.MvcWebApp.Controllers
 
                 throw new Exception("HATA:" + ex.Message);
             }
+        }
+
+        public async Task<IActionResult> PasswordAuthorizationAdd(int passwordID,int userID, int roleID)
+        {
+            tokenAuth();
+
+            var response = await _httpClient.PostAsync($"{ClientUrlHelper.PasswordService}AddUserToPassword?passwordID={passwordID}&userID={userID}&roleID={roleID}",null);
+
+            NotificationQueue notificationQueue = new NotificationQueue()
+            {
+                UserID = userID,
+                CompanyID = CurrentUser.CompanyID,
+                CreationDate = DateTime.Now,
+                Title = Enum.GetName(typeof(Role.UserRole), roleID),                
+                Body = "Rol Yetkilendirme Ekleme"
+
+            };
+
+            //json a çevirme
+            var content = new StringContent(JsonConvert.SerializeObject(notificationQueue), Encoding.UTF8, "application/json");
+            //post isteği
+            var notificationResponse = await _httpClient.PostAsync($"{ClientUrlHelper.NotificationQueueService}AddNotificationQueue", content);
+
+            return RedirectToAction("Index");
+        }
+
+        //şifre bazlı verilen rolleri currentuser'ın kim olduğu bilmedğimiz için yapmadık. YAPILABİLİR 
+        public async Task<IActionResult> PasswordAuthorizationRemove(int passwordID, int userID, int roleID)
+        {
+            tokenAuth();
+
+            var response = await _httpClient.DeleteAsync($"{ClientUrlHelper.PasswordService}RemoveUserToPassword?passwordID={passwordID}&userID={userID}&roleID={roleID}");
+
+
+            NotificationQueue notificationQueue = new NotificationQueue()
+            {
+                UserID = userID,
+                CompanyID = CurrentUser.CompanyID,
+                CreationDate = DateTime.Now,
+                Title = "Rol Yetkilendirme Silme",
+                Body = Enum.GetName(typeof(Role.UserRole), roleID)
+
+            };
+
+            //json a çevirme
+            var content = new StringContent(JsonConvert.SerializeObject(notificationQueue), Encoding.UTF8, "application/json");
+            //post isteği
+            var notificationResponse = await _httpClient.PostAsync($"{ClientUrlHelper.NotificationQueueService}AddNotificationQueue", content);
+
+            return RedirectToAction("Index");
         }
 
         [HttpGet]

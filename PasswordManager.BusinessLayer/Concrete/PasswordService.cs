@@ -80,11 +80,11 @@ namespace PasswordManager.BusinessLayer.Concrete
             {
                 int roleID = (int)Role.UserRole.PasswordAcces;
 
-                var passwordRoleCheck = _passwordRepository.PASSWORDROLE_CHECK(id,user.UserID,roleID);
+                var passwordRoleCheck = await _passwordRepository.PASSWORDROLE_CHECK(id,user.UserID,roleID);
 
-                var userRoleCheck = _userRepository.RoleCheck(roleID, user.UserID);
+                var userRoleCheck = await _userRepository.RoleCheck(roleID, user.UserID);
 
-                var groupRoleCheck = _groupRepository.UserGroupRoleCheck(user.UserID, roleID);
+                var groupRoleCheck = await _groupRepository.UserGroupRoleCheck(user.UserID, roleID);
 
                 if (userRoleCheck != null || groupRoleCheck != null || passwordRoleCheck != null)
                 {
@@ -114,11 +114,11 @@ namespace PasswordManager.BusinessLayer.Concrete
             {
                 int roleID = (int)Role.UserRole.RemovePassword;
 
-                var passwordRoleCheck = _passwordRepository.PASSWORDROLE_CHECK(id, user.UserID, roleID);
+                var passwordRoleCheck = await _passwordRepository.PASSWORDROLE_CHECK(id, user.UserID, roleID);
 
-                var userRoleCheck = _userRepository.RoleCheck(roleID, user.UserID);
+                var userRoleCheck = await _userRepository.RoleCheck(roleID, user.UserID);
 
-                var groupRoleCheck = _groupRepository.UserGroupRoleCheck(user.UserID, roleID);
+                var groupRoleCheck = await _groupRepository.UserGroupRoleCheck(user.UserID, roleID);
 
                 if (userRoleCheck != null || groupRoleCheck != null || passwordRoleCheck!= null)
                 {
@@ -203,6 +203,34 @@ namespace PasswordManager.BusinessLayer.Concrete
                     LevelID = value.LevelID,
                     CompanyID = value.CompanyID,
                     IsActive = value.IsActive
+                });
+            }
+
+            return decryptedPasswords;
+        }
+
+        public async Task<List<PasswordViewModels>> PasswordAccesGetList(int userID, int roleID)
+        {
+           var passwordList = await _passwordRepository.PasswordAccesGetList(userID, roleID);
+            List<PasswordViewModels> decryptedPasswords = new List<PasswordViewModels>();
+
+            foreach (var value in passwordList)
+            {
+                string decryptedPasswordValue = Encrypt.Decrypt(value.PasswordValue);
+                decryptedPasswords.Add(new PasswordViewModels
+                {
+                    PasswordID = value.PasswordID,
+                    UserID = value.UserID,
+                    UserName = value.UserName,
+                    CategoryName = value.CategoryName,
+                    LevelName = value.LevelName,
+                    CategoryID = value.CategoryID,
+                    CompanyName = value.CompanyName,
+                    PasswordValue = decryptedPasswordValue,
+                    LevelID = value.LevelID,
+                    CompanyID = value.CompanyID,
+                    IsActive = value.IsActive,
+                    RoleID = value.RoleID
                 });
             }
 

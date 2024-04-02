@@ -1,10 +1,7 @@
 ﻿using log4net;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using PasswordManager.BusinessLayer.Abstract;
-using PasswordManager.BusinessLayer.Concrete;
-using PasswordManager.Core.Entity;
 using PasswordManager.Core.Models;
 
 namespace WebApi.Controllers
@@ -267,7 +264,7 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> RemoveGroupToRole(int groupID, int roleID)
+        public async Task<IActionResult> RemoveGroupToRole(int groupRoleID)
         {
             try
             {
@@ -284,7 +281,7 @@ namespace WebApi.Controllers
                 }
 
 
-                await _groupService.RemoveGroupToRole(groupID,roleID,CurrentUser.UserID);
+                await _groupService.RemoveGroupToRole(groupRoleID,CurrentUser.UserID);
                 return Ok();
             }
             catch (Exception ex)
@@ -293,6 +290,31 @@ namespace WebApi.Controllers
                 _logger.Error("HATA-RemoveGroupToRole:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
+
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllGroupRoleByGroupID(int groupID)
+        {
+            try
+            {
+
+                var group = await _groupService.GetAllGroupRoleByGrouID(groupID);
+                if (group == null)
+                {
+                    return NotFound();
+                }
+                return Ok(group);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.Error("HATA-GetGroup:" + ex.ToString());
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+
 
         }
 

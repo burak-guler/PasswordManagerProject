@@ -1,4 +1,5 @@
 ﻿using log4net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -54,6 +55,23 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Notification_Get_List_UserID(int userID)
+        {
+            try
+            {
+
+                var values = await _notificationQueueService.Notification_Get_List_UserID(userID);
+                return Ok(values);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.Error("HATA-Notification_Get_List_UserID:" + ex.ToString());
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetNotificationQueue(int id)
         {
             try
@@ -92,6 +110,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateNotificationQueue(NotificationQueue notificationQueue)
         {
             try
@@ -103,6 +122,25 @@ namespace WebApi.Controllers
             {
 
                 _logger.Error("HATA-UpdateNotificationQueue:" + ex.ToString());
+                return StatusCode(500, "hata: " + ex.Message);
+            }
+
+        }
+
+        [HttpPut]
+        [AllowAnonymous]
+        public async Task<IActionResult> Notification_Update()
+        {
+            try
+            {
+                var datetime = DateTime.Now;
+                await _notificationQueueService.Notification_Update(datetime);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                _logger.Error("HATA-Notification_Update:" + ex.ToString());
                 return StatusCode(500, "hata: " + ex.Message);
             }
 

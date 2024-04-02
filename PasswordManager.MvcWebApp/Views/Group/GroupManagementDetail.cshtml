@@ -1,0 +1,192 @@
+﻿@using PasswordManager.MvcWebApp.Models
+@model GroupDetailViewModels
+@{
+    ViewData["Title"] = "GroupManagementDetail";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Grup Bilgileri</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Oluşturulma Tarihi</th>
+                                <th scope="col">Grup Adı</th>
+                                <th scope="col">Açıklama</th>
+                                <th scope="col">Şirket</th>  
+                                <th scope="col">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>@Model.groupViewModels.CreationDate</td>
+                                <td>@Model.groupViewModels.GroupName</td>
+                                <td>@Model.groupViewModels.GroupDescription</td>
+                                <td>@Model.groupViewModels.CompanyName</td>
+                                <td><a href="/Group/GroupUpdate/@Model.groupViewModels.GroupID" class="btn btn-warning m-2 update-btn">Güncelle</a></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Grupta Bulunan Kullancılar</h6>
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Kullanıcı Adı</th>
+                            <th scope="col">Level</th>
+                            <th scope="col">Şirket</th>
+                            <th scope="col">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.userViewsModels)
+                        {
+                            <tr>
+                                <th scope="row">#</th>
+                                <td>@item.UserName</td>
+                                <td>@item.LevelName</td>
+                                <td>@item.CompanyName</td>
+                                <td><a href="/Group/GroupToUserRemove/?userGroupID=@item.UserGroupID&groupID=@ViewBag.GroupID" class="btn btn-danger m-2">Sil</a></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+                <a href="#" class="btn btn-info m-2 role-add-btn" style="float:right;" data-toggle="modal" data-target="#groupAddModal" data-userid="@ViewBag.GroupID">Gruba Kullanıcı Ekle</a>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Grup Rolleri</h6>
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Rol</th>
+                            <th scope="col">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.roleViewModels)
+                        {
+                            <tr>
+                                <th scope="row">#</th>
+                                <td>@item.RoleName</td>
+                                <td><a href="/Group/GroupToRoleRemove/?groupRoleID=@item.GroupRoleID&groupID=@ViewBag.GroupID" class="btn btn-danger m-2">Sil</a></td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+                <a href="#" class="btn btn-info m-2 role-add-btn" style="float:right;" data-toggle="modal" data-target="#roleAddModal" data-userid="@ViewBag.GroupID">Rol Ekle</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<!-- Rol Ekleme Modalı -->
+<div class="modal fade" id="roleAddModal" tabindex="-1" role="dialog" aria-labelledby="roleAddModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Grup Rol Ekleme</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="GroupToRoleAdd" method="post">
+                    <input type="hidden" id="roleAddUserId" name="GroupID" value="@ViewBag.GroupID" />
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Rol Adı</label>
+                        <select asp-items="@ViewBag.Roles" name="roleID" class="form-control">
+                            <option value="">Seçiniz</option>
+                        </select>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary m-2 update-btn">Rol Ekle</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <!-- Güncelleme işlemini gerçekleştiren buton -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Grup Ekleme Modalı -->
+<div class="modal fade" id="groupAddModal" tabindex="-1" role="dialog" aria-labelledby="groupAddModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Gruba Kullanıcı Ekleme</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="GroupToUserAdd" method="post">
+                    <input type="hidden" id="groupAddUserId" name="GroupID" value="@ViewBag.GroupID" />
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Kullanıcı Adı</label>
+                        <select asp-items="@ViewBag.User" name="userID" class="form-control">
+                            <option value="">Seçiniz</option>
+                        </select>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary m-2 update-btn">Kullanıcıyı Ekle</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <!-- Güncelleme işlemini gerçekleştiren buton -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $(".update-btn").click(function () {
+            var userId = $(this).data('userid');
+            $("#updateUserId").val(userId); // Güncelleme modalında kullanıcı ID'sini saklayan bir input alanı ekleyin
+        });
+
+        $(".role-add-btn").click(function () {
+            var userId = $(this).data('userid');
+            $("#roleAddUserId").val(userId); // Rol ekleme modalında kullanıcı ID'sini saklayan bir input alanı ekleyin
+        });
+
+        $(".group-add-btn").click(function () {
+            var userId = $(this).data('userid');
+            $("#groupAddUserId").val(userId); // Grup ekleme modalında kullanıcı ID'sini saklayan bir input alanı ekleyin
+        });
+    });
+</script>
+

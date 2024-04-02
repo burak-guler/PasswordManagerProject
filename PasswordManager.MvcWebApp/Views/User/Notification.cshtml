@@ -1,0 +1,81 @@
+﻿@using PasswordManager.Core.Entity
+@model List<NotificationQueue>
+@{
+    ViewData["Title"] = "Notification";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+
+<style>
+    .notification-container {
+        margin-top: 20px;
+    }
+
+    .notification-item {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .notification-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .notification-title {
+        color: #007bff;
+        margin: 0;
+    }
+
+    .notification-date {
+        color: #999;
+        font-size: 0.9rem;
+    }
+
+    .notification-body {
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .notification-divider {
+        margin-top: 20px;
+    }
+
+    .no-notifications {
+        margin-top: 20px;
+        text-align: center;
+        color: #999;
+    }
+</style>
+
+
+@if (Model.Count > 0)
+{
+    <div class="notification-container">
+        @foreach (var item in Model)
+        {
+            <div class="notification-item">
+                <div class="notification-header">
+                    <h4 class="notification-title">@item.Title</h4>
+                    <div class="notification-date">@item.CreationDate.ToString("dd/MM/yyyy HH:mm")</div>
+                </div>
+                <div class="notification-body">
+                    <p>@item.Body</p>
+                </div>
+            </div>
+            <hr class="notification-divider">
+        }
+    </div>
+}
+else
+{
+    <div class="no-notifications">
+        <p>Bildirim Yok...</p>
+    </div>
+}
+
+

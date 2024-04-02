@@ -14,7 +14,7 @@ namespace PasswordManager.DataAccessLayer.Abstract
         Task AddUserToGroup(int userID, int groupID);
         Task RemoveUserToGroup(int userGroupID);
         Task AddGroupToRole(int groupID, int roleID);
-        Task RemoveGroupToRole(int groupID, int roleID);
+        Task RemoveGroupToRole(int groupRoleID);
         Task<GroupViewModels> UserGroupRoleCheck(int userID, int roleID);
         Task<List<GroupViewModels>> GetAllByCompanyId(int companyId);
         Task<int> Add(GroupViewModels value, SqlConnection conn);
@@ -23,5 +23,6 @@ namespace PasswordManager.DataAccessLayer.Abstract
         Task<int> LangUpdate(GroupViewModels value, SqlConnection conn);
         Task<List<GroupViewModels>> UserGroup_BYUserID(int userID);
         Task<List<UserViewModels>> UserGroup_BYGroupID(int groupID);
+        Task<List<GroupRoleViewModel>> GetAllGroupRoleByGrouID(int groupID);
     }
 }

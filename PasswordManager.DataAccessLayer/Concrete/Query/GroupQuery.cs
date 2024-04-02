@@ -16,7 +16,7 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
 
         public static readonly string LANG_ADD = @"
                         INSERT INTO dbo.Lang_Group (GroupID, LangID, GroupName,GroupDescription)
-                        VALUES (@@identity, @LangID, @GroupName,@GroupDescription);";
+                        VALUES (@GroupID, @LangID, @GroupName,@GroupDescription);";
 
 
         public static readonly string GET = @"
@@ -48,7 +48,7 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
                                                 WHERE GroupID = @id";
 
         public static readonly string UPDATE = @"
-                update Tbl_Group set CreationDate=@CreationDate, CompanyID=@CompanyID
+                update Tbl_Group set CreationDate=@CreationDate
                 OUTPUT INSERTED.GroupID
                 where GroupID=@GroupID";
 
@@ -72,7 +72,7 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
                                                             INNER JOIN Tbl_Users u ON ug.UserID = u.UserID
                                                             INNER JOIN Tbl_Company c ON u.CompanyID = c.CompanyID
                                                             INNER JOIN Lang_UserLevel lul ON u.LevelID = lul.LevelID
-                                                            WHERE ug.GroupID=@GroupID;";
+                                                            WHERE ug.GroupID=@GroupID and u.IsActive=1;";
 
         //userıd ve role ıd ye göre kişinin girmiş olduğu grupta istenilen rol varmı yokmu sorgusu;
         public static readonly string USERGROUP_ROLE_CHECK = @"SELECT g.*
@@ -89,7 +89,12 @@ namespace PasswordManager.DataAccessLayer.Concrete.Query
 
         public static readonly string GroupRoleRemove = @"
                                         DELETE From dbo.Lkp_GroupRole 
-                                        Where GroupID=@GroupID and RoleID=@RoleID";
+                                        Where GroupRoleID=@GroupRoleID";
+
+        //gelen groupıd ye göre grubun rollerini getirir.
+
+        public static readonly string UserRole_GetLıst_GroupID = @"
+                                        Select * from  dbo.Lkp_GroupRole where GroupID=@GroupID";
 
         //UserGroup Query
 

@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using PasswordManager.Core.Entity;
 using PasswordManager.Core.Models;
+using PasswordManager.MvcWebApp.Languages;
 using PasswordManager.MvcWebApp.Models;
 using PasswordManager.MvcWebApp.UrlStatic;
-using System.ComponentModel.Design;
 using System.Text;
 using static PasswordManager.Core.Entity.Role;
 
@@ -19,7 +17,7 @@ namespace PasswordManager.MvcWebApp.Controllers
     public class UserController : BaseController
     {        
         IHttpContextAccessor _contextAccessor;
-        public UserController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor,IConfiguration configuration) : base(httpClient, httpContextAccessor,configuration)
+        public UserController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor,IConfiguration configuration, IStringLocalizer<Lang> stringLocalizer) : base(httpClient, httpContextAccessor,configuration, stringLocalizer)
         {
             _contextAccessor = httpContextAccessor;
         }
@@ -76,6 +74,11 @@ namespace PasswordManager.MvcWebApp.Controllers
                 var response = await _httpClient.GetAsync($"{ClientUrlHelper.UserService}GetUser/?id={CurrentUser.UserID}");
                 var jsonString = await response.Content.ReadAsStringAsync();
                 var User = JsonConvert.DeserializeObject<UserViewModels>(jsonString);
+
+
+                ViewBag.UsersManagement = _stringLocalizer["UsersManagement"];
+                
+
                 return View(User);
             }
             catch (Exception ex)
@@ -83,6 +86,16 @@ namespace PasswordManager.MvcWebApp.Controllers
 
                 throw new Exception("HATA:" + ex.Message);
             }           
+        }
+
+        public async Task<IActionResult> Notification()
+        {
+            tokenAuth();
+            var response = await _httpClient.GetAsync($"{ClientUrlHelper.NotificationQueueService}Notification_Get_List_UserID?userID={CurrentUser.UserID}");
+            var jsonString = await response.Content.ReadAsStringAsync();
+            var queue = JsonConvert.DeserializeObject<List<NotificationQueue>>(jsonString);
+            
+            return View(queue);
         }
 
         // Admin erişebilir actionlar
@@ -280,7 +293,6 @@ namespace PasswordManager.MvcWebApp.Controllers
             }
 
         }
-
        
 
         public async Task<IActionResult> UserToGroupAdd(int userID , int groupID)

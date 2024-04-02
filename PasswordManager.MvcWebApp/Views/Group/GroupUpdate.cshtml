@@ -1,0 +1,36 @@
+﻿@model PasswordManager.Core.Models.GroupViewModels
+@{
+    ViewData["Title"] = "GroupUpdate";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Grup Güncelleme</h6>
+                <form method="post" action="GroupUpdate">
+                    <input type="text" class="form-control" asp-for="GroupID" hidden id="exampleInputEmail1"
+                           aria-describedby="emailHelp">
+                    <input type="text" class="form-control" asp-for="LangID" hidden id="exampleInputEmail1"
+                           aria-describedby="emailHelp">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Grup Adı</label>
+                        <input type="text" class="form-control" asp-for="GroupName" id="exampleInputEmail1"
+                               aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Grup Açıklama</label>
+                        <input type="text" class="form-control" id="exampleInputPassword1" asp-for="GroupDescription">
+                    </div>                 
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Kullanıcı Oluşturulma Tarihi</label>
+                        <input type="text" class="form-control" id="exampleInputPassword1" asp-for="CreationDate">
+                    </div>
+                    <button style="float:right; margin:10px;" type="submit" class="btn btn-warning">Güncelle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
