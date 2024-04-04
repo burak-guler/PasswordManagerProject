@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+
+<div class="dropdown">
+    <button type="button"
+            class="btn btn-primary dropdown-toggle"
+            data-bs-toggle="dropdown">
+        Localization
+    </button>
+    <ul class="dropdown-menu">
+        <li>
+            <a asp-controller="Language"
+               asp-action="ChangeLanguage"
+               asp-route-culture="en-US"
+               class="dropdown-item">
+                <i class="flag-icon flag-icon-gb"></i> English
+            </a>
+        </li>
+        <li>
+            <a asp-controller="Language"
+               asp-action="ChangeLanguage"
+               asp-route-culture="fr-FR"
+               class="dropdown-item">
+                <i class="flag-icon flag-icon-gb"></i> French
+            </a>
+            <a asp-controller="Language"
+               asp-action="ChangeLanguage"
+               asp-route-culture="tr-TR"
+               class="dropdown-item">
+                <i class="flag-icon flag-icon-gb"></i> Türkçe
+            </a>
+        </li>
+    </ul>
+</div>
+
+<h1>@ViewBag.Ornek</h1>
+

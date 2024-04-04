@@ -17,5 +17,7 @@
         public static readonly string NotificationQueueService = "NotificationQueue/";
 
         public static readonly string UserLevelService = "UserLevel/";
+
+        public static readonly string LanguageService = "Language/";
     }
 }

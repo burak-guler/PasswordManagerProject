@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using PasswordManager.Core.Entity;
 using PasswordManager.Core.Models;
-using PasswordManager.MvcWebApp.Languages;
 using PasswordManager.MvcWebApp.UrlStatic;
 using System.Text;
 using static PasswordManager.Core.Entity.Role;
@@ -14,14 +11,14 @@ namespace PasswordManager.MvcWebApp.Controllers
 {
     public class PasswordController : BaseController
     {
-        public PasswordController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IStringLocalizer<Lang> stringLocalizer) : base(httpClient, httpContextAccessor, configuration, stringLocalizer)
+        public PasswordController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(httpClient, httpContextAccessor, configuration)
         {
         }
 
         public async Task<IActionResult> Index()
         {
             try
-            {             
+            {               
 
                 tokenAuth();
                 var response = await _httpClient.GetAsync($"{ClientUrlHelper.PasswordService}GetAllBYUserIDPassword/?userID={CurrentUser.UserID}");

@@ -117,22 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Authority" xml:space="preserve">
+    <value>Authority</value>
+  </data>
   <data name="Exit" xml:space="preserve">
-    <value>Sortie</value>
+    <value>Exit</value>
+  </data>
+  <data name="Footer" xml:space="preserve">
+    <value>All Rights Reserved</value>
   </data>
   <data name="Groups" xml:space="preserve">
-    <value>Mes groupes</value>
+    <value>Groups</value>
   </data>
   <data name="GroupsManagement" xml:space="preserve">
-    <value>Gestion de groupe</value>
+    <value>Groups Management</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>Information about authorization notifications</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifications</value>
   </data>
   <data name="Passwords" xml:space="preserve">
-    <value>Mes mots de passe</value>
+    <value>Passwords</value>
   </data>
   <data name="Profile" xml:space="preserve">
-    <value>Mon profil</value>
+    <value>Profile</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
   </data>
   <data name="UsersManagement" xml:space="preserve">
-    <value>Gestion des utilisateurs</value>
+    <value>Users Management</value>
   </data>
 </root>

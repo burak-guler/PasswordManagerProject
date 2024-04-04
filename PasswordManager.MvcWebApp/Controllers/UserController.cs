@@ -5,7 +5,7 @@ using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using PasswordManager.Core.Entity;
 using PasswordManager.Core.Models;
-using PasswordManager.MvcWebApp.Languages;
+using PasswordManager.MvcWebApp.Services;
 using PasswordManager.MvcWebApp.Models;
 using PasswordManager.MvcWebApp.UrlStatic;
 using System.Text;
@@ -17,7 +17,7 @@ namespace PasswordManager.MvcWebApp.Controllers
     public class UserController : BaseController
     {        
         IHttpContextAccessor _contextAccessor;
-        public UserController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor,IConfiguration configuration, IStringLocalizer<Lang> stringLocalizer) : base(httpClient, httpContextAccessor,configuration, stringLocalizer)
+        public UserController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor,IConfiguration configuration) : base(httpClient, httpContextAccessor,configuration)
         {
             _contextAccessor = httpContextAccessor;
         }
@@ -76,7 +76,7 @@ namespace PasswordManager.MvcWebApp.Controllers
                 var User = JsonConvert.DeserializeObject<UserViewModels>(jsonString);
 
 
-                ViewBag.UsersManagement = _stringLocalizer["UsersManagement"];
+                //ViewBag.UsersManagement = _stringLocalizer["UsersManagement"];
                 
 
                 return View(User);

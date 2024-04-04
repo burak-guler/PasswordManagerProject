@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using PasswordManager.MvcWebApp.Languages;
+using PasswordManager.MvcWebApp.Services;
 
 namespace PasswordManager.MvcWebApp.Controllers
 {
     public class Error : BaseController
     {
-        public Error(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IStringLocalizer<Lang> stringLocalizer) : base(httpClient, httpContextAccessor, configuration, stringLocalizer)
+        public Error(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(httpClient, httpContextAccessor, configuration)
         {
         }
 

@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PasswordManager.Core.Entity;
 using PasswordManager.Core.Models;
-using PasswordManager.MvcWebApp.Languages;
+using PasswordManager.MvcWebApp.Services;
 using PasswordManager.MvcWebApp.Models;
 using PasswordManager.MvcWebApp.UrlStatic;
 using System.Text;
@@ -16,7 +16,7 @@ namespace PasswordManager.MvcWebApp.Controllers
 {
     public class GroupController : BaseController
     {
-        public GroupController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor,IConfiguration configuration, IStringLocalizer<Lang> stringLocalizer) : base(httpClient, httpContextAccessor, configuration, stringLocalizer)
+        public GroupController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(httpClient, httpContextAccessor, configuration)
         {
         }
 
@@ -67,14 +67,12 @@ namespace PasswordManager.MvcWebApp.Controllers
             tokenAuth();
 
             group.CompanyID = CurrentUser.CompanyID;
-            group.LangID = 1;
+            group.LangID = CurrentCulture.LangID;
             group.CreationDate = DateTime.Now;
 
             var content =  new StringContent(JsonConvert.SerializeObject(group), Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostAsync($"{ClientUrlHelper.GroupService}AddGroup", content);
-
-
            
 
             return RedirectToAction("GroupManagement");

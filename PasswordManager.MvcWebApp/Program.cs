@@ -1,35 +1,65 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using PasswordManager.MvcWebApp.Controllers;
+using PasswordManager.MvcWebApp.Services;
 using System.Globalization;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews()
-                    .AddViewLocalization();
+builder.Services.AddControllersWithViews();
+                  
 
-//Dil yapýsý için
-builder.Services.AddLocalization(options =>
-{
-    options.ResourcesPath = "Resources";
-});
+#region Localizer
+builder.Services.AddSingleton<LanguageService>();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddMvc().AddViewLocalization().AddDataAnnotationsLocalization(options =>
+    options.DataAnnotationLocalizerProvider = (type, factory) => 
+    {
+    var assemblyName = new AssemblyName(typeof(Lang).GetTypeInfo().Assembly.FullName);
+    return factory.Create(nameof(Lang), assemblyName.Name);
+    });
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    options.DefaultRequestCulture = new("tr-TR");
-
-    CultureInfo[] cultures = new CultureInfo[]
+    var supportCultures = new List<CultureInfo>
     {
-        new("tr-TR"),
-        new("en-US"),
-        new("fr-FR")
-    };
+        new CultureInfo("en-US"),
+        new CultureInfo("fr-FR"),
+        new CultureInfo("tr-TR")
 
-    options.SupportedCultures = cultures;
-    options.SupportedUICultures = cultures;
+    };
+    options.DefaultRequestCulture = new RequestCulture(culture: "tr-TR", uiCulture: "tr-TR");
+    options.SupportedCultures = supportCultures;
+    options.SupportedUICultures = supportCultures;
+    options.RequestCultureProviders.Insert(0, new QueryStringRequestCultureProvider());
+
 });
+
+#endregion
+//Dil yapýsý için
+//builder.Services.AddLocalization(options =>
+//{
+//    options.ResourcesPath = "Resources";
+//});
+
+//builder.Services.Configure<RequestLocalizationOptions>(options =>
+//{
+//    options.DefaultRequestCulture = new("tr-TR");
+
+//    CultureInfo[] cultures = new CultureInfo[]
+//    {
+//        new("tr-TR"),
+//        new("en-US"),
+//        new("fr-FR")
+//    };
+
+//    options.SupportedCultures = cultures;
+//    options.SupportedUICultures = cultures;
+//});
 
 //session yapýsý için
 builder.Services.AddHttpContextAccessor();
@@ -76,7 +106,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 //Dil yapýýsý için
-app.UseRequestLocalization();
+app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
 app.UseRouting();
 

@@ -1,4 +1,5 @@
-﻿@inject IHtmlLocalizer<Lang> Localizer //yes, it also works at the Shared view
+﻿@*  @inject IHtmlLocalizer<Lang> Localizer *@ @* //yes, it also works at the Shared view *@
+
 @{
     Layout = null;
 }
@@ -64,10 +65,10 @@
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                    <a href="/Password/Index/" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>@Localizer["Passwords"]</a>
-                    <a href="/Group/Index/" class="nav-item nav-link"><i class="fa fa-th me-2"></i>@Localizer["Groups"]</a>
-                    <a href="/User/UserManagement/" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>@Localizer["UsersManagement"]</a>
-                    <a href="/Group/GroupManagement/" class="nav-item nav-link"><i class="fa fa-table me-2"></i>@Localizer["GroupsManagement"]</a>
+                    <a href="/Password/Index/" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>@_localization.GetKey("Passwords").Value</a>
+                    <a href="/Group/Index/" class="nav-item nav-link"><i class="fa fa-th me-2"></i>@_localization.GetKey("Groups").Value</a>
+                    <a href="/User/UserManagement/" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>@_localization.GetKey("UsersManagement").Value</a>
+                    <a href="/Group/GroupManagement/" class="nav-item nav-link"><i class="fa fa-table me-2"></i>@_localization.GetKey("GroupsManagement").Value</a>
                     @* <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Şifre Yönetimi</a>                     *@
                 </div>
             </nav>
@@ -86,57 +87,54 @@
                     <i class="fa fa-bars"></i>
                 </a>
                 <form class="d-none d-md-flex ms-4">
-                    <input class="form-control border-0" type="search" placeholder="Ara">
+                    <input class="form-control border-0" type="search" placeholder="@_localization.GetKey("Search").Value">
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="fa fa-flag me-lg-2"></i>
-                            <span class="d-none d-lg-inline-flex">Languages</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-flag-usa"></i>
-                                    <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">English</h6>
-                                        
-                                    </div>
-                                </div>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-flag"></i>
-                                    <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">France</h6>                       
-                                    </div>
-                                </div>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-flag"></i>
-                                    <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">Turkey</h6>        
-                                    </div>
-                                </div>
-                            </a>
-                            <hr class="dropdown-divider">                   
+                        <div class="dropdown">                           
+                            <button type="button"
+                                    class="btn btn-primary dropdown-toggle"
+                                    data-bs-toggle="dropdown">
+                                Languages
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a asp-controller="Language"
+                                       asp-action="ChangeLanguage"
+                                       asp-route-culture="en-US"                                   
+                                       class="dropdown-item">
+                                        <i class="flag-icon flag-icon-gb"></i>English
+                                    </a>
+                                </li>                          
+                                <li>
+                                    <a asp-controller="Language"
+                                       asp-action="ChangeLanguage"
+                                       asp-route-culture="fr-FR"
+                                       class="dropdown-item">
+                                        <i class="flag-icon flag-icon-gb"></i> French
+                                    </a>
+                                    <a asp-controller="Language"
+                                       asp-action="ChangeLanguage"
+                                       asp-route-culture="tr-TR"
+                                       class="dropdown-item">
+                                        <i class="flag-icon flag-icon-gb"></i> Türkçe
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="fa fa-bell me-lg-2"></i>
-                            <span class="d-none d-lg-inline-flex">Bildirimler</span>
+                            <span class="d-none d-lg-inline-flex">@_localization.GetKey("Notifications").Value</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="/User/Notification/" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Yetki</h6>
-                                <small>Yetkilendirme bildirimleri hakkında bilgi</small>
+                                <h6 class="fw-normal mb-0">@_localization.GetKey("Authority").Value</h6>
+                                <small>@_localization.GetKey("Information").Value</small>
                             </a>
                             <hr class="dropdown-divider">                           
-                            <a href="#" class="dropdown-item text-center">Bildirimler</a>
+                            <a href="#" class="dropdown-item text-center">@_localization.GetKey("Notifications").Value</a>
                         </div>
                     </div>
                     <div class="nav-item dropdown">
@@ -145,8 +143,8 @@
                             <span class="d-none d-lg-inline-flex">Burak Güler</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="/User/Profile/" class="dropdown-item">Profilim</a>                            
-                            <a href="/User/Login/" class="dropdown-item">Çıkış</a>                            
+                            <a href="/User/Profile/" class="dropdown-item">@_localization.GetKey("Profile").Value</a>
+                            <a href="/User/Login/" class="dropdown-item">@_localization.GetKey("Exit").Value</a>
                         </div>
                     </div>
                 </div>
@@ -160,7 +158,7 @@
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
                         <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">Password Manager</a>, Bütün Hakları Saklıdır. 
+                            &copy; <a href="#">Password Manager</a>, @_localization.GetKey("Footer").Value.
                         </div>
                         @* <div class="col-12 col-sm-6 text-center text-sm-end">
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->

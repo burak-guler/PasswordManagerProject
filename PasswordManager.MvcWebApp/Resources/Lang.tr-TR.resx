@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Authority" xml:space="preserve">
+    <value>Yetki</value>
+  </data>
   <data name="Exit" xml:space="preserve">
     <value>Çıkış</value>
+  </data>
+  <data name="Footer" xml:space="preserve">
+    <value>Bütün Hakları Saklıdır</value>
   </data>
   <data name="Groups" xml:space="preserve">
     <value>Gruplarım</value>
@@ -126,11 +132,20 @@
   <data name="GroupsManagement" xml:space="preserve">
     <value>Grup Yönetimi</value>
   </data>
+  <data name="Information" xml:space="preserve">
+    <value>Yetkilendirme bildirimleri hakkında bilgi</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Bildirimler</value>
+  </data>
   <data name="Passwords" xml:space="preserve">
     <value>Şifrelerim</value>
   </data>
   <data name="Profile" xml:space="preserve">
     <value>Profilim</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Ara</value>
   </data>
   <data name="UsersManagement" xml:space="preserve">
     <value>Kullanıcı Yönetimi</value>

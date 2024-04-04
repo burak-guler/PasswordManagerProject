@@ -18,6 +18,7 @@ namespace WebApi.Extension
             services.AddScoped<INotificationQueueService, NotificationQueueService>();
             services.AddScoped<IUserLevelService, UserLevelService>();
             services.AddScoped<ITokenService, TokenService>();            
+            services.AddScoped<ILanguageService, LanguageService>();            
             return services;    
         }
 
@@ -31,6 +32,7 @@ namespace WebApi.Extension
             services.AddScoped<ILogRepository, LogRepository>();
             services.AddScoped<INotificationQueueRepository, NotificationQueueRepository>();
             services.AddScoped<IUserLevelRepository, UserLevelRepository>();
+            services.AddScoped<ILanguageRepository, LanguageRepository>();
             return services;
         }
     }
