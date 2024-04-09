@@ -10,6 +10,7 @@ using PasswordManager.MvcWebApp.Models;
 using PasswordManager.MvcWebApp.UrlStatic;
 using System.Text;
 using static PasswordManager.Core.Entity.Role;
+using PasswordManager.MvcWebApp.Encryption;
 
 
 namespace PasswordManager.MvcWebApp.Controllers
@@ -25,7 +26,23 @@ namespace PasswordManager.MvcWebApp.Controllers
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Login()
-        {                    
+       {                 
+
+            var cookieValue = Request.Cookies["ID"];            
+
+            if (cookieValue != null)
+            {
+                var userID = CookieEncryptionHelper.Decrypt(cookieValue);
+                tokenAuth();
+                var response = await _httpClient.GetAsync($"{ClientUrlHelper.UserService}GetUser/?id={userID}");
+                var jsonString = await response.Content.ReadAsStringAsync();
+                var User = JsonConvert.DeserializeObject<UserViewModels>(jsonString);
+
+                await Login(User);
+                return RedirectToAction("Profile");
+            }
+           
+
             return View();
         }
 
@@ -54,7 +71,11 @@ namespace PasswordManager.MvcWebApp.Controllers
 
                 _contextAccessor.HttpContext.Session.SetString("CurrentUser", JsonConvert.SerializeObject(loginResponse));
 
-                var name = CurrentUser.UserName;              
+                var name = CurrentUser.UserName;
+               
+                var cookieValue = CookieEncryptionHelper.Encrypt(CurrentUser.UserID.ToString());
+
+                HttpContext.Response.Cookies.Append("ID", cookieValue.ToString());
 
                 return RedirectToAction("Profile");               
             }
@@ -65,21 +86,24 @@ namespace PasswordManager.MvcWebApp.Controllers
             }            
         }
 
+        public async Task<IActionResult> Logout()
+        {           
+            HttpContext.Response.Cookies.Delete("ID");
+            return RedirectToAction("Login");
+        }
+
         [HttpGet]
         public async Task<IActionResult> Profile()
-        {
+       {
             try
             {
                 tokenAuth();
                 var response = await _httpClient.GetAsync($"{ClientUrlHelper.UserService}GetUser/?id={CurrentUser.UserID}");
                 var jsonString = await response.Content.ReadAsStringAsync();
                 var User = JsonConvert.DeserializeObject<UserViewModels>(jsonString);
-
-
-                //ViewBag.UsersManagement = _stringLocalizer["UsersManagement"];
-                
-
                 return View(User);
+
+
             }
             catch (Exception ex)
             {

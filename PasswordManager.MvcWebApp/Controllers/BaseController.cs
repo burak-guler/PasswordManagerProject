@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
+using PasswordManager.Core.Entity;
 using PasswordManager.Core.Models;
 using PasswordManager.MvcWebApp.Models;
+using System.Globalization;
 using System.Net.Http.Headers;
 
 namespace PasswordManager.MvcWebApp.Controllers
@@ -26,30 +28,18 @@ namespace PasswordManager.MvcWebApp.Controllers
             _httpClient.BaseAddress = new Uri($"{url}");
         }
 
-        protected LanguageInfo CurrentCulture
+        protected Language SelectedLanguage
         {
             get
             {
-                var culture = Thread.CurrentThread.CurrentCulture.Name;
-                var name = Thread.CurrentThread.CurrentUICulture.Name;
+                var languageJson = _httpContextAccessor.HttpContext.Session.GetString("SelectedLanguage");
 
-                if (!string.IsNullOrEmpty(culture))
-                {
-                    switch (culture)
-                    {
-                        case "tr-TR":
-                            return new LanguageInfo { LangID = 1, Culture = "tr-TR" };
-                        case "en-US":
-                            return new LanguageInfo { LangID = 2, Culture = "en-US" };
-                        case "fr-FR":
-                            return new LanguageInfo { LangID = 3, Culture = "fr-FR" };
-                        default:                            
-                            return new LanguageInfo { LangID = 1, Culture = "tr-TR" };
-                    }
-                }
-                else
-                    return null;
+                if (!string.IsNullOrEmpty(languageJson))
+                    return JsonConvert.DeserializeObject<Language>(languageJson);
+
+                return null;
             }
+            
         }
 
         protected LoginResponse CurrentUser

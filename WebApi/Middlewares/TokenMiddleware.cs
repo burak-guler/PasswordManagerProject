@@ -27,7 +27,7 @@ namespace WebApi.Middlewares
         {
             try
             {
-                if (!context.Request.Path.Value.Equals("/api/User/Login"))
+                if (!context.Request.Path.Value.Equals("/api/User/Login") && !context.Request.Path.Value.Equals("/api/Language/GetAllLanguages"))
                 {
                     var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 

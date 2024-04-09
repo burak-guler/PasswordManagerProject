@@ -67,7 +67,7 @@ namespace PasswordManager.MvcWebApp.Controllers
             tokenAuth();
 
             group.CompanyID = CurrentUser.CompanyID;
-            group.LangID = CurrentCulture.LangID;
+            group.LangID = SelectedLanguage.LangID;//CurrentCulture.LangID;
             group.CreationDate = DateTime.Now;
 
             var content =  new StringContent(JsonConvert.SerializeObject(group), Encoding.UTF8, "application/json");

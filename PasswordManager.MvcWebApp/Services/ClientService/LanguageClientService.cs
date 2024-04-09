@@ -15,6 +15,7 @@ namespace PasswordManager.MvcWebApp.Services.ClientService
 
         public async Task<List<Language>> GetAllLanguages()
         {
+            
             var response = await _httpClient.GetAsync("https://localhost:7014/api/Language/GetAllLanguages");
             response.EnsureSuccessStatusCode(); // Bu satır, isteğin başarılı olup olmadığını kontrol eder.
 

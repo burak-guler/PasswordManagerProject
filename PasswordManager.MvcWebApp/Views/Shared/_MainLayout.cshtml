@@ -1,4 +1,5 @@
 ﻿@*  @inject IHtmlLocalizer<Lang> Localizer *@ @* //yes, it also works at the Shared view *@
+    
 
 @{
     Layout = null;
@@ -97,29 +98,23 @@
                                     data-bs-toggle="dropdown">
                                 Languages
                             </button>
+                            @{
+                                var language = await _language.GetAllLanguages();
+                            }
+                            
                             <ul class="dropdown-menu">
-                                <li>
-                                    <a asp-controller="Language"
-                                       asp-action="ChangeLanguage"
-                                       asp-route-culture="en-US"                                   
-                                       class="dropdown-item">
-                                        <i class="flag-icon flag-icon-gb"></i>English
-                                    </a>
-                                </li>                          
-                                <li>
-                                    <a asp-controller="Language"
-                                       asp-action="ChangeLanguage"
-                                       asp-route-culture="fr-FR"
-                                       class="dropdown-item">
-                                        <i class="flag-icon flag-icon-gb"></i> French
-                                    </a>
-                                    <a asp-controller="Language"
-                                       asp-action="ChangeLanguage"
-                                       asp-route-culture="tr-TR"
-                                       class="dropdown-item">
-                                        <i class="flag-icon flag-icon-gb"></i> Türkçe
-                                    </a>
-                                </li>
+                                @foreach (var item in language)
+                                {
+                                    <li>
+                                        <a asp-controller="Language"
+                                           asp-action="ChangeLanguage"
+                                           asp-route-culture="@item.Lang_ISO"
+                                           asp-route-langID="@item.LangID"
+                                           class="dropdown-item">
+                                            <i class="flag-icon flag-icon-gb"></i>@item.LangName
+                                        </a>
+                                    </li>
+                                }
                             </ul>
                         </div>
                     </div>
@@ -144,7 +139,7 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="/User/Profile/" class="dropdown-item">@_localization.GetKey("Profile").Value</a>
-                            <a href="/User/Login/" class="dropdown-item">@_localization.GetKey("Exit").Value</a>
+                            <a href="/User/Logout/" class="dropdown-item">@_localization.GetKey("Exit").Value</a>
                         </div>
                     </div>
                 </div>

@@ -7,7 +7,7 @@ using PasswordManager.BusinessLayer.Abstract;
 namespace WebApi.Controllers
 {
 
-
+    [AllowAnonymous]
     public class LanguageController : BaseController
     {
         private ILanguageService _languageService;

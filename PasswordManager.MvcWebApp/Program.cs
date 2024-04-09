@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PasswordManager.MvcWebApp.Services;
+using PasswordManager.MvcWebApp.Services.ClientService;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ILanguageClientService, LanguageClientService>();
                   
 
 #region Localizer
@@ -40,26 +42,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 });
 
 #endregion
-//Dil yapýsý için
-//builder.Services.AddLocalization(options =>
-//{
-//    options.ResourcesPath = "Resources";
-//});
 
-//builder.Services.Configure<RequestLocalizationOptions>(options =>
-//{
-//    options.DefaultRequestCulture = new("tr-TR");
-
-//    CultureInfo[] cultures = new CultureInfo[]
-//    {
-//        new("tr-TR"),
-//        new("en-US"),
-//        new("fr-FR")
-//    };
-
-//    options.SupportedCultures = cultures;
-//    options.SupportedUICultures = cultures;
-//});
 
 //session yapýsý için
 builder.Services.AddHttpContextAccessor();
@@ -67,26 +50,7 @@ builder.Services.AddSession();
 builder.Services.AddDistributedMemoryCache();
 
 //jwt doðrulamasý için
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(o =>
-{
-    o.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidIssuer = builder.Configuration["JwtSettings:ValidIssuer"],
-        ValidAudience = builder.Configuration["JwtSettings:ValidAudience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Secret"])),
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        RequireExpirationTime = true,
-        ClockSkew = TimeSpan.Zero
-    };
-});
+builder.Services.AddAuthentication();
 
 
 builder.Services.AddHttpClient();
