@@ -26,7 +26,7 @@ namespace PasswordManager.MvcWebApp.Controllers
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Login()
-       {                 
+      {                 
 
             var cookieValue = Request.Cookies["ID"];            
 
