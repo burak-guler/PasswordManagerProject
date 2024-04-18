@@ -13,9 +13,9 @@ namespace WebApi.Controllers
         private readonly ILog _logger;
         private IUserService _userService;
         private IUserLevelService _userLevelService;
-        public GroupController(IHttpContextAccessor contextAccessor, IMemoryCache memoryCache,IGroupService groupService, ILog log, IUserService userService,IUserLevelService userLevelService) : base(contextAccessor, memoryCache)
+        public GroupController(IHttpContextAccessor contextAccessor, IMemoryCache memoryCache, IGroupService groupService, ILog log, IUserService userService, IUserLevelService userLevelService) : base(contextAccessor, memoryCache)
         {
-            _logger = log;  
+            _logger = log;
             _groupService = groupService;
             _userService = userService;
             _userLevelService = userLevelService;
@@ -77,7 +77,7 @@ namespace WebApi.Controllers
                 {
                     throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
                 }
-                
+
 
                 var group = await _groupService.GetById(id);
                 if (group == null)
@@ -101,6 +101,8 @@ namespace WebApi.Controllers
         {
             try
             {
+                if (CurrentUser == null) { throw new Exception("Kullanıcı bulunamadı."); }
+
                 var user = await _userService.GetById(CurrentUser.UserID);
                 if (user == null)
                 {
@@ -111,6 +113,11 @@ namespace WebApi.Controllers
                 if (level.LevelName != "Admin")
                 {
                     throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                }
+
+                if (group == null)
+                {
+                    throw new Exception("model tipi boş geçilemez.");
                 }
 
                 await _groupService.Add(group, CurrentUser.UserID);
@@ -187,7 +194,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> UserGroup_BYuserID(int userID)
         {
             try
-            {               
+            {
 
                 var group = await _groupService.UserGroup_BYUserID(userID);
                 if (group == null)
@@ -232,11 +239,11 @@ namespace WebApi.Controllers
 
         //LKP_GroupRole Add 
         [HttpPost]
-        public async Task <IActionResult> AddRoleToGroup(int groupID, int roleID) 
+        public async Task<IActionResult> AddRoleToGroup(int groupID, int roleID)
         {
             try
             {
-                if (groupID > 0 && roleID > 0 ) 
+                if (groupID > 0 && roleID > 0)
                 {
                     var user = await _userService.GetById(CurrentUser.UserID);
                     if (user == null)
@@ -250,7 +257,7 @@ namespace WebApi.Controllers
                         throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
                     }
 
-                    await _groupService.AddGroupToRole(groupID, roleID,CurrentUser.UserID);    
+                    await _groupService.AddGroupToRole(groupID, roleID, CurrentUser.UserID);
                     return Ok();
                 }
                 return NotFound();
@@ -260,7 +267,7 @@ namespace WebApi.Controllers
 
                 _logger.Error("Hata-AddRoleToGroup" + ex.ToString());
                 return StatusCode(500, ex.Message);
-            }           
+            }
         }
 
         [HttpDelete]
@@ -281,7 +288,7 @@ namespace WebApi.Controllers
                 }
 
 
-                await _groupService.RemoveGroupToRole(groupRoleID,CurrentUser.UserID);
+                await _groupService.RemoveGroupToRole(groupRoleID, CurrentUser.UserID);
                 return Ok();
             }
             catch (Exception ex)
@@ -356,7 +363,10 @@ namespace WebApi.Controllers
         {
             try
             {
-
+                if (userGroupID==null || userGroupID >= 0)
+                {
+                    throw new Exception("Geçersiz veya boş userGroupID");
+                }
                 await _groupService.RemoveUserToGroup(userGroupID, CurrentUser.UserID);
                 return Ok();
             }
