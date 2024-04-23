@@ -22,7 +22,7 @@ namespace WebApi.Controllers
             _memoryCache = memoryCache;
         }        
         
-        protected UserTokenResponse CurrentUser
+        public UserTokenResponse CurrentUser
         {
             get
             {

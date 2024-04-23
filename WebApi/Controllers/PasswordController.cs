@@ -45,13 +45,13 @@ namespace WebApi.Controllers
                 var user = await _userService.GetById(CurrentUser.UserID);
                 if (user == null)
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                    return NotFound();
                 }
 
                 var level = await _userLevelService.GetById(user.LevelID);
                 if (level.LevelName != "Admin")
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                    return NotFound();
                 }
 
                 var values = await _passwordService.GetAllByCompanyId(companyId);
@@ -71,6 +71,10 @@ namespace WebApi.Controllers
             try
             {
                 var values = await _passwordService.GetAllByUserId(userID);
+                if (values == null)
+                {
+                    return NotFound();
+                }
                 return Ok(values);
             }
             catch (Exception ex)
@@ -167,13 +171,13 @@ namespace WebApi.Controllers
                     var user = await _userService.GetById(CurrentUser.UserID);
                     if (user == null)
                     {
-                        throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                        return NotFound();
                     }
 
                     var level = await _userLevelService.GetById(user.LevelID);
                     if (level.LevelName != "Admin")
                     {
-                        throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                        return NotFound();
                     }
 
                     await _passwordService.AddUserToPasswordAcces(passwordID, userID, roleID);
@@ -219,13 +223,13 @@ namespace WebApi.Controllers
                 var user = await _userService.GetById(CurrentUser.UserID);
                 if (user == null)
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                    return NotFound();
                 }
 
                 var level = await _userLevelService.GetById(user.LevelID);
                 if (level.LevelName != "Admin")
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                    return NotFound();
                 }
 
                 await _passwordService.RemoveUserToPasswordAcces(passwordID, userID, roleID);

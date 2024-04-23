@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using PasswordManager.BusinessLayer.Abstract;
-using PasswordManager.BusinessLayer.Concrete;
-using PasswordManager.Core.Entity;
 using PasswordManager.Core.Models;
 
 namespace WebApi.Controllers
@@ -74,18 +72,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> GetAllBYCompanyIDUser(int companyId)
         {
             try
-            {
-                //var user = await _userService.GetById(CurrentUser.UserID);
-                //if (user == null)
-                //{
-                //    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
-                //}
-
-                //var level = await _userLevelService.GetById(user.LevelID);
-                //if (level.LevelName != "Admin")
-                //{
-                //    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
-                //}
+            {              
 
                 var values = await _userService.GetAllByCompanyId(companyId);
                 return Ok(values);
@@ -106,14 +93,8 @@ namespace WebApi.Controllers
                 var user = await _userService.GetById(CurrentUser.UserID);
                 if (user == null)
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
-                }
-
-                //var level = await _userLevelService.GetById(user.LevelID);
-                //if (level.LevelName != "Admin")
-                //{
-                //    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
-                //}
+                    return NotFound();
+                }               
 
                 var value = await _userService.GetById(id);
                 if (value == null)
@@ -154,13 +135,13 @@ namespace WebApi.Controllers
                 var userValue = await _userService.GetById(CurrentUser.UserID);
                 if (userValue == null)
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                    return NotFound();
                 }
 
                 var level = await _userLevelService.GetById(userValue.LevelID);
                 if (level.LevelName != "Admin")
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                    return NotFound();
                 }
 
                 await _userService.Update(user);
@@ -182,13 +163,13 @@ namespace WebApi.Controllers
                 var user = await _userService.GetById(CurrentUser.UserID);
                 if (user == null)
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                    return NotFound();
                 }
 
                 var level = await _userLevelService.GetById(user.LevelID);
                 if (level.LevelName != "Admin")
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                    return NotFound();
                 }
 
                 await _userService.Remove(id);
@@ -212,13 +193,13 @@ namespace WebApi.Controllers
                     var user = await _userService.GetById(CurrentUser.UserID);
                     if (user == null)
                     {
-                        throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                        return NotFound();
                     }
 
                     var level = await _userLevelService.GetById(user.LevelID);
                     if (level.LevelName != "Admin")
                     {
-                        throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                        return NotFound();
                     }
 
 
@@ -243,13 +224,13 @@ namespace WebApi.Controllers
                 var user = await _userService.GetById(CurrentUser.UserID);
                 if (user == null)
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                    return NotFound(); 
                 }
 
                 var level = await _userLevelService.GetById(user.LevelID);
                 if (level.LevelName != "Admin")
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                    return NotFound();
                 }
 
                 var value = await _userService.GetAllUserRoleByUserID(userID);
@@ -276,13 +257,13 @@ namespace WebApi.Controllers
                 var user = await _userService.GetById(CurrentUser.UserID);
                 if (user == null)
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                    return NotFound();
                 }
 
                 var level = await _userLevelService.GetById(user.LevelID);
                 if (level.LevelName != "Admin")
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                    return NotFound();
                 }
 
                 await _userService.RemoveUserToRole(userRoleID);

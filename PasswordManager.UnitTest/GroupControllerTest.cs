@@ -7,11 +7,6 @@ using PasswordManager.BusinessLayer.Abstract;
 using PasswordManager.Core.Entity;
 using PasswordManager.Core.Models;
 using PasswordManager.UnitTest.Concrete.Token;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebApi.Controllers;
 
 namespace PasswordManager.UnitTest
@@ -25,6 +20,7 @@ namespace PasswordManager.UnitTest
         private readonly Mock<IGroupService> _mockGroupService;
         private readonly Mock<IUserLevelService> _mockUserLevelService;
         private readonly Mock<IUserService> _mockUserService;
+        
 
         public GroupControllerTest()
         {
@@ -34,6 +30,8 @@ namespace PasswordManager.UnitTest
             _mockUserLevelService = new Mock<IUserLevelService>();
             _mockUserService = new Mock<IUserService>();
             _mockGroupService = new Mock<IGroupService>();
+
+            
 
             _controller = new GroupController(
                 _mockHttpContextAccessor.Object,
@@ -79,25 +77,46 @@ namespace PasswordManager.UnitTest
                 new GroupViewModels { GroupID =1, GroupName="Next4biz", CreationDate=DateTime.Now, GroupDescription="Stajyer Grubu",CompanyID=1, LangID=1, CompanyName="next"  }
             };
 
-            var userTokenResponse = new UserTokenResponse()
+            var user = new UserViewModels()
             {
                 UserID = 1,
                 UserName = "BurakGuler",
                 Password = "12345",
-                AuthToken = TokenInfo.ADMINTOKEN
+                CompanyID=1,
+                LevelID=1,
+                CreationDate=DateTime.Now,
+                IsActive=true,
+                LevelName = "Admin",
             };
 
-            _mockHttpContextAccessor.Setup(x => x.HttpContext.Request.Headers["Authorization"]).Returns($"Bearer {TokenInfo.ADMINTOKEN}");
+            var userLevel = new UserLevel()
+            {
+                LevelID = 1,
+                LevelName = "Admin"
+            };
 
-            _mockMemoryCache.Setup(x => x.TryGetValue(It.IsAny<object>(), out userTokenResponse))
-            .Returns(true); 
+            var userTokenResponse = new UserTokenResponse()
+            {
+                UserID = 1,
+                UserName = "BurakGuler",
+                Password = "12345"
+            };           
 
-            _mockMemoryCache.Setup(x=>x.TryGetValue(TokenInfo.ADMINTOKEN,out userTokenResponse)).Returns(true);
-                        
+            _mockHttpContextAccessor.Setup(x => x.HttpContext.Request.Headers["Authorization"]).Returns($"Bearer {TokenInfo.ADMINTOKEN}");            
 
-            _mockGroupService.Setup(x => x.GetAllByCompanyId(companyId)).ReturnsAsync(groups);
+            _mockMemoryCache.Setup(x => x.Set<UserTokenResponse>(TokenInfo.ADMINTOKEN,userTokenResponse));
+
+            _mockMemoryCache.Setup(m => m.TryGetValue<UserTokenResponse>(TokenInfo.ADMINTOKEN, out  userTokenResponse)).Returns(true);           
+
+            _mockUserService.Setup(x => x.GetById(user.UserID)).ReturnsAsync(user);
+
+            _mockUserLevelService.Setup(x=>x.GetById(user.LevelID)).ReturnsAsync(userLevel);
+
+            _mockGroupService.Setup(x => x.GetAllByCompanyId(companyId)).ReturnsAsync(groups);           
 
             // Act
+
+            
             var actionResult = await _controller.GetAllBYCompanyIDGroup(companyId);
 
             // Assert
@@ -119,7 +138,7 @@ namespace PasswordManager.UnitTest
             _mockHttpContextAccessor.Setup(x => x.HttpContext.Request.Headers["Authorization"]).Returns($"Bearer {TokenInfo.ADMINTOKEN}");
 
             _mockGroupService.Setup(x => x.GetById(groupID)).ReturnsAsync(group);
-
+             
             // Act
             var actionResult = await _controller.GetGroup(groupID);
 

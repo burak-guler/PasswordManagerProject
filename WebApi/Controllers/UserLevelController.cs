@@ -26,6 +26,7 @@ namespace WebApi.Controllers
             {
 
                 var values = await _userLevelService.GetAll();
+                if (values == null) { return NotFound(); }
                 return Ok(values);
             }
             catch (Exception ex)
@@ -44,6 +45,7 @@ namespace WebApi.Controllers
             {
 
                 var values = await _userLevelService.GetAllByCompanyId(companyId);
+                if (values == null) { return NotFound(); }
                 return Ok(values);
             }
             catch (Exception ex)
