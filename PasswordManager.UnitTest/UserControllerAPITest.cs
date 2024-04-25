@@ -15,7 +15,7 @@ using WebApi.Controllers;
 
 namespace PasswordManager.UnitTest
 {
-    public class UserControllerTest
+    public class UserControllerAPITest
     {
         private UserController _controller;
         private Mock<IUserService> _mockUserService;
@@ -25,7 +25,7 @@ namespace PasswordManager.UnitTest
         private Mock<IHttpContextAccessor> _mockHttpContextAccessor;
         private Mock<IMemoryCache> _mockMemoryCache;
 
-        public UserControllerTest()
+        public UserControllerAPITest()
         {
             _mockUserService = new Mock<IUserService>();
             _mockTokenService = new Mock<ITokenService>();

@@ -14,13 +14,13 @@ using WebApi.Controllers;
 
 namespace PasswordManager.UnitTest
 {
-    public class UserLevelControllerTest
+    public class UserLevelControllerAPITest
     {
         private UserLevelController _controller;
         private Mock<IUserLevelService> _mockUserLevelService;
         private Mock<ILog> _mockLogger;
 
-        public UserLevelControllerTest()
+        public UserLevelControllerAPITest()
         {
             _mockUserLevelService = new Mock<IUserLevelService>();
             _mockLogger = new Mock<ILog>();

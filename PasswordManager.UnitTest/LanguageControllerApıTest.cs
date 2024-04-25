@@ -9,7 +9,7 @@ using WebApi.Controllers;
 
 namespace PasswordManager.UnitTest
 {
-    public class LanguageControllerTest
+    public class LanguageControllerApıTest
     {
         private readonly LanguageController _controller;
         private readonly Mock<ILanguageService> _mockLanguageService;
@@ -17,7 +17,7 @@ namespace PasswordManager.UnitTest
         private readonly Mock<IMemoryCache> _mockMemoryCache;
         private readonly Mock<ILog> _mockLogger;
 
-        public LanguageControllerTest()
+        public LanguageControllerApıTest()
         {
             _mockLanguageService = new Mock<ILanguageService>();
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();

@@ -10,7 +10,7 @@ using WebApi.Controllers;
 
 namespace PasswordManager.UnitTest
 {
-    public class PasswordControllerTest
+    public class PasswordControllerAPITest
     {
         private readonly PasswordController _controller;
         private readonly Mock<IPasswordService> _mockPasswordService;
@@ -20,7 +20,7 @@ namespace PasswordManager.UnitTest
         private readonly Mock<IUserService> _mockUserService;
         private readonly Mock<IUserLevelService> _mockUserLevelService;
 
-        public PasswordControllerTest()
+        public PasswordControllerAPITest()
         {
             _mockPasswordService = new Mock<IPasswordService>();
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();

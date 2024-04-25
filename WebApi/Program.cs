@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using PasswordManager.BusinessLayer.Models;
-using System.Configuration;
-using System.Data.SqlClient;
-using System.Data;
 using System.Text;
 using WebApi.Extension;
 using WebApi.Middlewares;
@@ -75,3 +72,5 @@ app.UseMiddleware<TokenMiddleware>();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

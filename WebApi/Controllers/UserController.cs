@@ -89,12 +89,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> GetUser(int id)
         {
             try
-            {
-                var user = await _userService.GetById(CurrentUser.UserID);
-                if (user == null)
-                {
-                    return NotFound();
-                }               
+            {                              
 
                 var value = await _userService.GetById(id);
                 if (value == null)

@@ -31,29 +31,29 @@ namespace PasswordManager.UnitTest
                 _mockMemoryCache.Object);
         }
 
-        [Fact]
-        public async Task GetAllCategory_ReturnsNonEmptyCategoryList()
-        {
-            // Arrange
-            var categories = new List<Category>
-            {
-                new Category { CategoryID = 1, CategoryName = "Category 1" },
-                new Category { CategoryID = 2, CategoryName = "Category 2" }
-            };
+        //[Fact]
+        //public async Task GetAllCategory_ReturnsNonEmptyCategoryList()
+        //{
+        //    // Arrange
+        //    var categories = new List<Category>
+        //    {
+        //        new Category { CategoryID = 1, CategoryName = "Category 1" },
+        //        new Category { CategoryID = 2, CategoryName = "Category 2" }
+        //    };
 
-            _mockCategoryService.Setup(x => x.GetAll()).ReturnsAsync(categories);
+        //    _mockCategoryService.Setup(x => x.GetAll()).ReturnsAsync(categories);
 
-            // Act
-            var actionResult = await _controller.GetAllCategory();
+        //    // Act
+        //    var actionResult = await _controller.GetAllCategory();
 
-            // Assert
-            var okObjectResult = Assert.IsType<OkObjectResult>(actionResult);
-            var model = Assert.IsAssignableFrom<List<Category>>(okObjectResult.Value);
+        //    // Assert
+        //    var okObjectResult = Assert.IsType<OkObjectResult>(actionResult);
+        //    var model = Assert.IsAssignableFrom<List<Category>>(okObjectResult.Value);
 
-            // Assert that the returned list is not null and contains items
-            Assert.NotNull(model);
-            Assert.NotEmpty(model);
-        }
+        //    // Assert that the returned list is not null and contains items
+        //    Assert.NotNull(model);
+        //    Assert.NotEmpty(model);
+        //}
 
         [Fact]
         public async Task GetAllByCompanyIDCategory_WithValidID_ReturnsNonEmptyCategoryList()

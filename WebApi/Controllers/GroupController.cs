@@ -46,13 +46,13 @@ namespace WebApi.Controllers
                 var user = await _userService.GetById(CurrentUser.UserID);
                 if (user == null)
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
+                    return NotFound();
                 }
 
                 var level = await _userLevelService.GetById(user.LevelID);
                 if (level.LevelName != "Admin")
                 {
-                    throw new UnauthorizedAccessException("Kullanıcı yetki dışı.");
+                    return NotFound();
                 }
 
 

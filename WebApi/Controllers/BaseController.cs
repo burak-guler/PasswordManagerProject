@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using PasswordManager.Core.Entity;
 using PasswordManager.Core.Models;
 
 namespace WebApi.Controllers
@@ -22,7 +19,7 @@ namespace WebApi.Controllers
             _memoryCache = memoryCache;
         }        
         
-        public UserTokenResponse CurrentUser
+        protected UserTokenResponse CurrentUser
         {
             get
             {
